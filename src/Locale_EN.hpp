@@ -6,4 +6,4 @@
 #define BANGR_LABEL_PAN "Pan"
 #define BANGR_LABEL_SPEED "Speed"
 #define BANGR_LABEL_SPIN "Spin"
-#define BANGR_LABEL_POWERED_BY "Powered by Airwindows XRange"
+#define BANGR_LABEL_POWERED_BY "Powered by Airwindows XRegion"

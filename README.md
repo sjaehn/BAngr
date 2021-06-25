@@ -1,6 +1,6 @@
 # B.Angr
 A multi-dimensional dynamicly distorted staggered multi-bandpass LV2 plugin, for extreme soundmangling.
-Based on Airwindows XRange.
+Based on Airwindows XRegion.
 
 Key features:
 * Multi-bandpass / distortion
@@ -94,7 +94,7 @@ and edit the parameters. You can also provide a background image at `./surface_S
 
 ## Acknowledgments
 
-* Thanks to Chris Johnson for the Airwindows plugin XRange: http://www.airwindows.com/xregion/
+* Thanks to Chris Johnson for the Airwindows plugin XRegion: http://www.airwindows.com/xregion/
 
 
 ## Links
