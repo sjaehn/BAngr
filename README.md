@@ -67,7 +67,14 @@ to run it stand-alone and connect it to the JACK system.
 
 ## Usage
 
-TODO
+The user interface of B.Angr contains four parameter instances of the XRegion parameters gain, 
+first, last, nuke, and mix. Plus an additional pan dial for each instance. Sliding between the
+instances is controlled by the white point in the central controller fiels. The movement of
+this point can be controlled by the parameters speed and spin. But you can also slide between 
+the four instances by dragging the white point of the central controller field to
+the respective instance.
+
+More about XRegion at http://www.airwindows.com/xregion/ .
 
 
 ## Customize
@@ -88,8 +95,6 @@ and edit the parameters. You can also provide a background image at `./surface_S
 ## TODO
 
 * Code optimization / speed
-* Write documention
-* Make tutorial video
 
 
 ## Acknowledgments
@@ -99,4 +104,4 @@ and edit the parameters. You can also provide a background image at `./surface_S
 
 ## Links
 
-* TODO
+* Preview video: https://www.youtube.com/watch?v=-kWy_1UYazo
