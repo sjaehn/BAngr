@@ -51,27 +51,29 @@ void XRegion::process (float* input1, float* input2, float* output1, float* outp
 	double spread = 1.001 - fabs (high - low);
     double nuke = params[3];
 	
-	biquad[0] = (pow(high,3)*20000.0)/rate;
+	biquad[0] = high * high * high *20000.0 / rate;
 	if (biquad[0] < 0.00009) biquad[0] = 0.00009;
 	double compensation = sqrt(biquad[0])*6.4*spread;
 	double clipFactor = 0.75+(biquad[0]*nuke*37.0);
 	
-	biquadA[0] = (pow((high+mid)*0.5,3)*20000.0)/rate;
+    const double hm = 0.5 * (high + mid);
+	biquadA[0] = hm * hm * hm *20000.0 / rate;
 	if (biquadA[0] < 0.00009) biquadA[0] = 0.00009;
 	double compensationA = sqrt(biquadA[0])*6.4*spread;
 	double clipFactorA = 0.75+(biquadA[0]*nuke*37.0);
 	
-	biquadB[0] = (pow(mid,3)*20000.0)/rate;
+	biquadB[0] = mid * mid * mid *20000.0 / rate;
 	if (biquadB[0] < 0.00009) biquadB[0] = 0.00009;
 	double compensationB = sqrt(biquadB[0])*6.4*spread;
 	double clipFactorB = 0.75+(biquadB[0]*nuke*37.0);
 	
-	biquadC[0] = (pow((mid+low)*0.5,3)*20000.0)/rate;
+    const double ml = 0.5 * (mid + low);
+	biquadC[0] = ml * ml * ml * 20000.0 / rate;
 	if (biquadC[0] < 0.00009) biquadC[0] = 0.00009;
 	double compensationC = sqrt(biquadC[0])*6.4*spread;
 	double clipFactorC = 0.75+(biquadC[0]*nuke*37.0);
 	
-	biquadD[0] = (pow(low,3)*20000.0)/rate;
+	biquadD[0] = low * low * low * 20000.0 / rate;
 	if (biquadD[0] < 0.00009) biquadD[0] = 0.00009;
 	double compensationD = sqrt(biquadD[0])*6.4*spread;
 	double clipFactorD = 0.75+(biquadD[0]*nuke*37.0);
@@ -264,10 +266,10 @@ void XRegion::process (float* input1, float* input2, float* output1, float* outp
 		//begin 32 bit stereo floating point dither
 		int expon; frexpf((float)inputSampleL, &expon);
 		fpdL ^= fpdL << 13; fpdL ^= fpdL >> 17; fpdL ^= fpdL << 5;
-		inputSampleL += ((double(fpdL)-uint32_t(0x7fffffff)) * 5.5e-36l * pow(2,expon+62));
+		inputSampleL += ((double(fpdL)-uint32_t(0x7fffffff)) * 5.5e-36l * (1 << (expon+62)));
 		frexpf((float)inputSampleR, &expon);
 		fpdR ^= fpdR << 13; fpdR ^= fpdR >> 17; fpdR ^= fpdR << 5;
-		inputSampleR += ((double(fpdR)-uint32_t(0x7fffffff)) * 5.5e-36l * pow(2,expon+62));
+		inputSampleR += ((double(fpdR)-uint32_t(0x7fffffff)) * 5.5e-36l * (1 << (expon+62)));
 		//end 32 bit stereo floating point dither
 		
 		*output1 = inputSampleL * (1.0f - (pan > 0.0f) * pan);
