@@ -31,6 +31,7 @@
 #include "Dial.hpp"
 #include "DialRange.hpp"
 #include "Dot.hpp"
+#include "HaloButton.hpp"
 #include "Definitions.hpp"
 #include "Ports.hpp"
 #include "Urids.hpp"
@@ -56,6 +57,8 @@
 #endif
 
 #define XREGION_URL "http://www.airwindows.com/xregion/"
+#define HELP_URL "https://github.com/sjaehn/BAngr/blob/master/README.md"
+#define YT_URL "https://www.youtube.com/watch?v=-kWy_1UYazo"
 #define RESIZE(widget, x, y, w, h, sz) (widget).moveTo ((x) * (sz), (y) * (sz)); (widget).resize ((w) * (sz), (h) * (sz));
 
 class BAngrGUI : public BWidgets::Window
@@ -81,6 +84,8 @@ private:
 	static void cursorDraggedCallback (BEvents::Event* event);
 	static void cursorReleasedCallback (BEvents::Event* event);
 	static void xregionClickedCallback (BEvents::Event* event);
+	static void helpButtonClickedCallback (BEvents::Event* event);
+	static void ytButtonClickedCallback (BEvents::Event* event);
 
 	std::string pluginPath;
 	double sz;
@@ -94,6 +99,8 @@ private:
 	BWidgets::Widget mContainer;
 	Dot cursor;
 	BWidgets::Label poweredLabel;
+	HaloButton helpButton;
+	HaloButton ytButton;
 	DialRange speedDial;
 	BWidgets::Label speedLabel;
 	DialRange spinDial;
@@ -137,7 +144,7 @@ private:
 
 	BStyles::StyleSet focusStyles = {"labels", {{"background", STYLEPTR (&screenBg)},
 					{"border", STYLEPTR (&BStyles::noBorder)},
-					{"textcolors", STYLEPTR (&fgColors)},
+					{"textcolors", STYLEPTR (&txColors)},
 					{"font", STYLEPTR (&defaultFont)}}};
 
 	BStyles::Theme theme = BStyles::Theme 
@@ -148,6 +155,7 @@ private:
 		{"main", 		{{"background", STYLEPTR (&widgetBg)},
 				 		 {"border", STYLEPTR (&BStyles::noBorder)}}},
 		{"widget", 		{{"uses", STYLEPTR (&defaultStyles)}}},
+		{"widget/focus",{{"uses", STYLEPTR (&focusStyles)}}},
 		{"dial", 		{{"uses", STYLEPTR (&defaultStyles)},
 						 {"fgcolors", STYLEPTR (&fgColors)},
 						 {"bgcolors", STYLEPTR (&bgColors)},

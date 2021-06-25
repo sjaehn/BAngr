@@ -36,6 +36,8 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 	mContainer (0, 0, 1000, 560, "main"),
 	cursor (480, 260, 40, 40, "dot"),
 	poweredLabel (720, 540, 280, 20, "label", BANGR_LABEL_POWERED_BY),
+	helpButton (918, 18, 24, 24, "widget", BANGR_LABEL_HELP),
+	ytButton (948, 18, 24, 24, "widget", BANGR_LABEL_VIDEO),
 	speedDial (370, 460, 60, 60, "dial", 0.5, 0.0, 1.0, 0.0, BIDIRECTIONAL, "%1.2f", ""),
 	speedLabel (370, 520, 60, 20, "label", BANGR_LABEL_SPEED),
 	spinDial (570, 460, 60, 60, "dial", 0.0, -1.0, 1.0, 0.0, BIDIRECTIONAL, "%1.2f", ""),
@@ -82,6 +84,8 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 	cursor.setCallbackFunction (BEvents::EventType::BUTTON_PRESS_EVENT, BAngrGUI::cursorDraggedCallback);
 	cursor.setCallbackFunction (BEvents::EventType::BUTTON_RELEASE_EVENT, BAngrGUI::cursorReleasedCallback);
 	poweredLabel.setCallbackFunction (BEvents::EventType::BUTTON_PRESS_EVENT, BAngrGUI::xregionClickedCallback);
+	helpButton.setCallbackFunction (BEvents::EventType::BUTTON_PRESS_EVENT, BAngrGUI::helpButtonClickedCallback);
+	ytButton.setCallbackFunction (BEvents::EventType::BUTTON_PRESS_EVENT, BAngrGUI::ytButtonClickedCallback);
 
 	// Load background & apply theme
 	bgImageSurface = cairo_image_surface_create_from_png ((pluginPath + BG_FILE).c_str());
@@ -101,6 +105,8 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 	mContainer.add (spinLabel);
 	mContainer.add (cursor);
 	mContainer.add (poweredLabel);
+	mContainer.add (helpButton);
+	mContainer.add (ytButton);
 	add (mContainer);
 
 	//Scan host features for URID map
@@ -185,6 +191,8 @@ void BAngrGUI::resizeGUI()
 	RESIZE (mContainer, 0, 0, 1000, 560, sz);
 	cursor.resize (40.0 * sz, 40.0 * sz);
 	RESIZE (poweredLabel, 720, 540, 280, 20, sz);
+	RESIZE (helpButton, 918, 18, 24, 24, sz);
+	RESIZE (ytButton, 948, 18, 24, 24, sz);
 	RESIZE (speedDial, 370, 460, 60, 60, sz);
 	RESIZE (speedLabel, 370, 520, 60, 20, sz);
 	RESIZE (spinDial, 570, 460, 60, 60, sz);
@@ -217,6 +225,8 @@ void BAngrGUI::applyTheme (BStyles::Theme& theme)
 	mContainer.applyTheme (theme);
 	cursor.applyTheme (theme);
 	poweredLabel.applyTheme (theme);
+	helpButton.applyTheme (theme);
+	ytButton.applyTheme (theme);
 	speedDial.applyTheme (theme);
 	speedLabel.applyTheme (theme);
 	spinDial.applyTheme (theme);
@@ -354,6 +364,24 @@ void BAngrGUI::xregionClickedCallback (BEvents::Event* event)
 	char param[] = XREGION_URL;
 	char* argv[] = {cmd, param, NULL};
 	std::cerr << "BAngr.lv2#GUI: Call " << XREGION_URL << " for Airwindows XRegion.\n";
+	if (BUtilities::vsystem (argv) == -1) std::cerr << "BAngr.lv2#GUI: Couldn't fork.\n";
+}
+
+void BAngrGUI::helpButtonClickedCallback (BEvents::Event* event)
+{
+	char cmd[] = WWW_BROWSER_CMD;
+	char param[] = HELP_URL;
+	char* argv[] = {cmd, param, NULL};
+	std::cerr << "BAngr.lv2#GUI: Call " << HELP_URL << " for help.\n";
+	if (BUtilities::vsystem (argv) == -1) std::cerr << "BAngr.lv2#GUI: Couldn't fork.\n";
+}
+
+void BAngrGUI::ytButtonClickedCallback (BEvents::Event* event)
+{
+	char cmd[] = WWW_BROWSER_CMD;
+	char param[] = YT_URL;
+	char* argv[] = {cmd, param, NULL};
+	std::cerr << "BAngr.lv2#GUI: Call " << YT_URL << " for preview video.\n";
 	if (BUtilities::vsystem (argv) == -1) std::cerr << "BAngr.lv2#GUI: Couldn't fork.\n";
 }
 

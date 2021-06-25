@@ -166,12 +166,12 @@
      inkscape:window-height="1016"
      inkscape:window-width="1920"
      units="px"
-     showgrid="false"
+     showgrid="true"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
-     inkscape:cy="14.849242"
-     inkscape:cx="335.87572"
-     inkscape:zoom="0.70710678"
+     inkscape:cy="150.75"
+     inkscape:cx="941.25"
+     inkscape:zoom="2"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -226,7 +226,7 @@
        sodipodi:argument="-21.5275"
        sodipodi:t0="0"
        d="m 370,20 c -0.50139,-0.250693 0.0906,-0.79954 0.41667,-0.833335 0.88372,-0.09158 1.36731,0.918265 1.25,1.666672 -0.20984,1.338724 -1.69857,1.983604 -2.91667,1.666668 -1.78762,-0.465116 -2.61342,-2.487743 -2.08334,-4.166678 0.70651,-2.237757 3.27984,-3.248691 5.41668,-2.500002 2.689,0.942149 3.88674,4.073273 2.91667,6.666685 -1.17489,3.140969 -4.86745,4.52639 -7.91669,3.333335 -3.46083,-1.354096 -5.07792,-5.380462 -3.87829,-8.825538"
-       transform="matrix(1.1708829,0,0,1.1973029,-330.03917,130.17893)" />
+       transform="matrix(1.3874979,0,0,1.4086937,-410.28373,124.6282)" />
     <path
        style="display:inline;fill:#800000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 142.875,148.83332 11.90625,17.19792 25.13542,-5.29167 6.61458,-11.90625 z"
@@ -243,8 +243,35 @@
        sodipodi:radius="7.4246058"
        sodipodi:argument="-21.5275"
        sodipodi:t0="0"
-       transform="matrix(-1.1708829,0,0,1.1973029,594.6225,130.17893)"
+       transform="matrix(-1.3874983,0,0,1.4086937,674.33803,124.6282)"
        d="m 370,20 c -0.50139,-0.250693 0.0906,-0.79954 0.41667,-0.833335 0.88372,-0.09158 1.36731,0.918265 1.25,1.666672 -0.20984,1.338724 -1.69857,1.983604 -2.91667,1.666668 -1.78762,-0.465116 -2.61342,-2.487743 -2.08334,-4.166678 0.70651,-2.237757 3.27984,-3.248691 5.41668,-2.500002 2.689,0.942149 3.88674,4.073273 2.91667,6.666685 -1.17489,3.140969 -4.86745,4.52639 -7.91669,3.333335 -3.46083,-1.354096 -5.07792,-5.380462 -3.87829,-8.825538" />
+    <path
+       inkscape:connector-curvature="0"
+       id="rect1147"
+       d="m 252.80937,154.98487 c -0.6596,0 -1.19061,0.53103 -1.19061,1.19063 v 1.19063 c 0,0.6596 0.53101,1.19063 1.19061,1.19063 h 2.38126 c 0.6596,0 1.19061,-0.53103 1.19061,-1.19063 v -1.19063 c 0,-0.6596 -0.53101,-1.19063 -1.19061,-1.19063 z m 0.59532,0.83344 1.42875,0.9525 -1.42875,0.95251 z"
+       style="display:inline;fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.238125;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;enable-background:new" />
+    <g
+       transform="matrix(0.90000002,0,0,0.90000002,15.081264,13.895817)"
+       id="g1165"
+       style="display:inline;enable-background:new">
+      <circle
+         style="fill:none;fill-rule:evenodd;stroke:#808080;stroke-width:0.529167;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path1156"
+         cx="256.64581"
+         cy="158.75"
+         r="2.1166666" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;line-height:6.61458px;font-family:'Good Times';-inkscape-font-specification:'Good Times';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#808080;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="255.43156"
+         y="160.21622"
+         id="text1160"><tspan
+           sodipodi:role="line"
+           id="tspan1158"
+           x="255.43156"
+           y="160.21622"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:4.23333px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans Bold';fill:#808080;stroke-width:0.264583">?</tspan></text>
+    </g>
   </g>
   <g
      inkscape:label="Ebene 3"
