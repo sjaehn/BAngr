@@ -248,8 +248,24 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 		}
 
 		// Set params and process
-		xregion.setParameters (params);
-		xregion.process (&audioInput1[i], &audioInput2[i], &audioOutput1[i], &audioOutput2[i], 1);
+		if (!controllers[BYPASS])
+		{
+			float out1 = audioOutput1[i];
+			float out2 = audioOutput2[i];
+			xregion.setParameters (params);
+			xregion.process (&audioInput1[i], &audioInput2[i], &out1, &out2, 1);
+
+			// Dry/wet mix
+			audioOutput1[i] = controllers[DRY_WET] * out1 + (1.0f - controllers[DRY_WET]) * audioInput1[i];
+			audioOutput2[i] = controllers[DRY_WET] * out2 + (1.0f - controllers[DRY_WET]) * audioInput2[i];
+		}
+
+		else
+		{
+			audioOutput1[i] = audioInput1[i];
+			audioOutput2[i] = audioInput2[i];
+
+		}
 	}
 }
 

@@ -32,6 +32,7 @@
 #include "DialRange.hpp"
 #include "Dot.hpp"
 #include "HaloButton.hpp"
+#include "LightButton.hpp"
 #include "Definitions.hpp"
 #include "Ports.hpp"
 #include "Urids.hpp"
@@ -101,6 +102,10 @@ private:
 	BWidgets::Label poweredLabel;
 	HaloButton helpButton;
 	HaloButton ytButton;
+	LightButton bypassButton;
+	BWidgets::Label bypassLabel;
+    Dial drywetDial;
+	BWidgets::Label drywetLabel;
 	DialRange speedDial;
 	BWidgets::Label speedLabel;
 	DialRange spinDial;
@@ -136,6 +141,16 @@ private:
 		BStyles::TEXT_VALIGN_MIDDLE
 	);
 
+	BStyles::Font rFont =	BStyles::Font 
+	(
+		"Sans", 
+		CAIRO_FONT_SLANT_NORMAL, 
+		CAIRO_FONT_WEIGHT_NORMAL, 
+		12.0,
+		BStyles::TEXT_ALIGN_RIGHT, 
+		BStyles::TEXT_VALIGN_MIDDLE
+	);
+
 	BStyles::StyleSet defaultStyles = {"default", {{"background", STYLEPTR (&BStyles::noFill)}, {"border", STYLEPTR (&BStyles::noBorder)}}};
 	BStyles::StyleSet labelStyles = {"labels", {{"background", STYLEPTR (&BStyles::noFill)},
 						    {"border", STYLEPTR (&BStyles::noBorder)},
@@ -163,6 +178,8 @@ private:
 						 {"font", STYLEPTR (&defaultFont)}}},
 		{"dial/focus", 	{{"uses", STYLEPTR (&focusStyles)}}},
 		{"label",	 	{{"uses", STYLEPTR (&labelStyles)}}},
+		{"rlabel",	 	{{"uses", STYLEPTR (&labelStyles)},
+						 {"font", STYLEPTR (&rFont)}}},
 		{"dot", 		{{"uses", STYLEPTR (&defaultStyles)},
 						 {"fgcolors", STYLEPTR (&txColors)}}}
 	});

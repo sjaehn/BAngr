@@ -9,3 +9,5 @@
 #define BANGR_LABEL_POWERED_BY "Powered by Airwindows XRegion"
 #define BANGR_LABEL_HELP "Help"
 #define BANGR_LABEL_VIDEO "Preview"
+#define BANGR_LABEL_BYPASS "Bypass"
+#define BANGR_LABEL_DRY_WET "Dry/wet"

@@ -35,9 +35,13 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 
 	mContainer (0, 0, 1000, 560, "main"),
 	cursor (480, 260, 40, 40, "dot"),
-	poweredLabel (720, 540, 280, 20, "label", BANGR_LABEL_POWERED_BY),
-	helpButton (918, 18, 24, 24, "widget", BANGR_LABEL_HELP),
-	ytButton (948, 18, 24, 24, "widget", BANGR_LABEL_VIDEO),
+	poweredLabel (720, 540, 250, 20, "rlabel", BANGR_LABEL_POWERED_BY),
+	helpButton (918, 508, 24, 24, "widget", BANGR_LABEL_HELP),
+	ytButton (948, 508, 24, 24, "widget", BANGR_LABEL_VIDEO),
+	bypassButton (900, 30, 20, 20, "dial"),
+	bypassLabel (880, 60, 60, 20, "label", BANGR_LABEL_BYPASS),
+	drywetDial (940, 20, 40, 40, "dial", 1.0, 0.0, 1.0, 0.0, ""),
+	drywetLabel (930, 60, 60, 20, "label", BANGR_LABEL_DRY_WET),
 	speedDial (370, 460, 60, 60, "dial", 0.5, 0.0, 1.0, 0.0, BIDIRECTIONAL, "%1.2f", ""),
 	speedLabel (370, 520, 60, 20, "label", BANGR_LABEL_SPEED),
 	spinDial (570, 460, 60, 60, "dial", 0.0, -1.0, 1.0, 0.0, BIDIRECTIONAL, "%1.2f", ""),
@@ -62,6 +66,8 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 	}
 
 	// Link controllers
+	controllerWidgets[BYPASS] = &bypassButton;
+	controllerWidgets[DRY_WET] = &drywetDial;
 	controllerWidgets[SPEED] = &speedDial;
 	controllerWidgets[SPEED_RANGE] = &speedDial.range;
 	controllerWidgets[SPIN] = &spinDial;
@@ -99,6 +105,10 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 		for (BWidgets::Label& l : f.paramLabels) f.container.add (l);
 		mContainer.add (f.container);
 	}
+	mContainer.add (bypassButton);
+	mContainer.add (bypassLabel);
+	mContainer.add (drywetDial);
+	mContainer.add (drywetLabel);
 	mContainer.add (speedDial);
 	mContainer.add (speedLabel);
 	mContainer.add (spinDial);
@@ -176,6 +186,7 @@ void BAngrGUI::resizeGUI()
 
 	// Resize Fonts
 	defaultFont.setFontSize (12 * sz);
+	rFont.setFontSize (12 * sz);
 
 	// Resize Background
 	cairo_surface_t* surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 1000 * sz, 560 * sz);
@@ -190,9 +201,13 @@ void BAngrGUI::resizeGUI()
 	// Resize widgets
 	RESIZE (mContainer, 0, 0, 1000, 560, sz);
 	cursor.resize (40.0 * sz, 40.0 * sz);
-	RESIZE (poweredLabel, 720, 540, 280, 20, sz);
-	RESIZE (helpButton, 918, 18, 24, 24, sz);
-	RESIZE (ytButton, 948, 18, 24, 24, sz);
+	RESIZE (poweredLabel, 720, 540, 250, 20, sz);
+	RESIZE (helpButton, 918, 508, 24, 24, sz);
+	RESIZE (ytButton, 948, 508, 24, 24, sz);
+	RESIZE (bypassButton, 900, 30, 20, 20, sz);
+	RESIZE (bypassLabel, 880, 60, 60, 20, sz);
+	RESIZE (drywetDial, 940, 20, 40, 40, sz);
+	RESIZE (drywetLabel, 930, 60, 60, 20, sz);
 	RESIZE (speedDial, 370, 460, 60, 60, sz);
 	RESIZE (speedLabel, 370, 520, 60, 20, sz);
 	RESIZE (spinDial, 570, 460, 60, 60, sz);
@@ -227,6 +242,10 @@ void BAngrGUI::applyTheme (BStyles::Theme& theme)
 	poweredLabel.applyTheme (theme);
 	helpButton.applyTheme (theme);
 	ytButton.applyTheme (theme);
+	bypassButton.applyTheme (theme);
+	bypassLabel.applyTheme (theme);
+	drywetDial.applyTheme (theme);
+	drywetLabel.applyTheme (theme);
 	speedDial.applyTheme (theme);
 	speedLabel.applyTheme (theme);
 	spinDial.applyTheme (theme);

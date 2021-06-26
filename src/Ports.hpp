@@ -31,11 +31,13 @@ enum BAngrPortIndex
 	AUDIO_OUT_2	= 5,
 
 	CONTROLLERS	= 6,
-	SPEED		= 0,
-	SPEED_RANGE	= 1,
-	SPIN		= 2,
-	SPIN_RANGE	= 3,
-	FX			= 4,
+	BYPASS		= 0,
+	DRY_WET		= 1,
+	SPEED		= 2,
+	SPEED_RANGE	= 3,
+	SPIN		= 4,
+	SPIN_RANGE	= 5,
+	FX			= 6,
 	NR_FX		= 4,
 
 	PARAM_GAIN	= 0,

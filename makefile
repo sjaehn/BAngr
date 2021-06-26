@@ -72,6 +72,8 @@ B_FILES = $(addprefix $(BUNDLE)/, $(ROOTFILES) $(INCFILES))
 DSP_INCL = src/Airwindows/XRegion.cpp
 
 GUI_CXX_INCL = \
+	src/BWidgets/ToggleButton.cpp \
+	src/BWidgets/Button.cpp \
 	src/BWidgets/RangeWidget.cpp \
 	src/BWidgets/ValueWidget.cpp \
 	src/BWidgets/Label.cpp \

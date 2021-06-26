@@ -26,6 +26,8 @@
 
 const Limit controllerLimits [NR_CONTROLLERS] =
 {
+    {0.0, 1.0, 1.0},    // Bypass
+    {0.0, 1.0, 0.0},    // Dry/wet
     {0.0, 1.0, 0.0},    // Speed
     {0.0, 1.0, 0.0},    // Speed range
     {-1.0, 1.0, 0.0},   // Spin
