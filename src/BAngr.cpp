@@ -36,6 +36,7 @@ BAngr::BAngr (double samplerate, const LV2_Feature* const* features) :
 	rnd (time (0)), 
 	bidist (-1.0, 1.0),
 	count (0),
+	fader (0.0f),
 	speed (0.0f),
 	nspeed (0.5f),
 	spin (0.0f),
@@ -247,8 +248,15 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 			);
 		}
 
+		// Update fader
+		if (fader != (1.0f - controllers[BYPASS]))
+		{
+			fader += (fader < 1.0f - controllers[BYPASS] ? 100.0 / rate : -100.0 / rate);
+			fader = LIMIT (fader, 0.0f, 1.0f);
+		}
+
 		// Set params and process
-		if (!controllers[BYPASS])
+		if (fader)
 		{
 			float out1 = audioOutput1[i];
 			float out2 = audioOutput2[i];
@@ -256,8 +264,8 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 			xregion.process (&audioInput1[i], &audioInput2[i], &out1, &out2, 1);
 
 			// Dry/wet mix
-			audioOutput1[i] = controllers[DRY_WET] * out1 + (1.0f - controllers[DRY_WET]) * audioInput1[i];
-			audioOutput2[i] = controllers[DRY_WET] * out2 + (1.0f - controllers[DRY_WET]) * audioInput2[i];
+			audioOutput1[i] = fader * controllers[DRY_WET] * out1 + (1.0f - fader * controllers[DRY_WET]) * audioInput1[i];
+			audioOutput2[i] = fader * controllers[DRY_WET] * out2 + (1.0f - fader * controllers[DRY_WET]) * audioInput2[i];
 		}
 
 		else

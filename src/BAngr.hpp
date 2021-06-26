@@ -57,6 +57,7 @@ private:
 	std::minstd_rand rnd;
 	std::uniform_real_distribution<float> bidist;
 	double count;
+	float fader;
 	float speed;
 	float nspeed;
 	float spin;
