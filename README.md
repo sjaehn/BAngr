@@ -16,7 +16,7 @@ a) Install the bangr package for your system (once available)
 
 b) Build your own binaries in the following three steps.
 
-Step 1: [Download the latest published version](https://github.com/sjaehn/BAngr/releases - once established) of B.Angr. 
+Step 1: [Download the latest published version](https://github.com/sjaehn/BAngr/releases) of B.Angr. 
 Or clone or [download the master](https://github.com/sjaehn/BAngr/archive/master.zip) of this repository.
 
 Step 2: Install pkg-config and the development packages for x11, cairo, and lv2 if not done yet. If you
@@ -84,22 +84,13 @@ available). To create a new language pack, copy `src/Locale_EN.hpp` and edit
 the text for the respective definitions. But do not change or delete any definition symbol!
 
 To create a new skin, duplicate `src/Skin_Default.hpp`, rename it to `src/Skin_Default.hpp`
-and edit the parameters. You can also provide a background image at `./surface_SkinName.png`.
-
-
-## What's new
-
-* This plugin
-  
-
-## TODO
-
-* Code optimization / speed
+and edit the parameters.
 
 
 ## Acknowledgments
 
-* Thanks to Chris Johnson for the Airwindows plugin XRegion: http://www.airwindows.com/xregion/
+* Thanks to Chris Johnson for the Airwindows plugin XRegion: http://www.airwindows.com/xregion/ . 
+Support his work via https://www.patreon.com/airwindows .
 
 
 ## Links
