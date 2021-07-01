@@ -41,8 +41,8 @@ make
 sudo make install
 ```
 
-**Optional:** Standard `make` and `make install` parameters are supported. Compiling using `make CPPFLAGS+=-O3`
-is recommended to improve the plugin performance. Alternatively, you may build a debugging version using
+**Optional:** Standard `make` and `make install` parameters are supported. **Compiling using `make CPPFLAGS+=-O3`**
+**is recommended to improve the plugin performance.** Alternatively, you may build a debugging version using
 `make CPPFLAGS+=-g`. For installation into an alternative directory (e.g., /usr/lib/lv2/), change the
 variable `PREFIX` while installing: `sudo make install PREFIX=/usr`. If you want to freely choose the
 install target directory, change the variable `LV2DIR` (e.g., `make install LV2DIR=~/.lv2`) or even define
@@ -74,6 +74,12 @@ this point can be controlled by the parameters speed and spin. But you can also 
 the four instances by dragging the white point of the central controller field to
 the respective instance.
 
+The flexible amount of speed and spin can be increased or decreased by dragging or scrolling
+the white arrows on the outside the repective dial. The behaviour of the flexible amount can
+be controlled by the audio input signal. Set the type (level, lows, mids, highs) and the amount 
+of control (from 0 = random to 1 = full control) of, its lows, its mids, or its hights. And
+let the white pont move to the music. Or leave everything in the random state.
+
 More about XRegion at http://www.airwindows.com/xregion/ .
 
 
@@ -85,6 +91,17 @@ the text for the respective definitions. But do not change or delete any definit
 
 To create a new skin, duplicate `src/Skin_Default.hpp`, rename it to `src/Skin_Default.hpp`
 and edit the parameters.
+
+
+## What's new
+
+* Flexibility controls
+* Recomendation to compile with `-O3`
+
+
+## TODO
+
+* Reduce CPU load
 
 
 ## Acknowledgments

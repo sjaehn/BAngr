@@ -30,8 +30,12 @@ const Limit controllerLimits [NR_CONTROLLERS] =
     {0.0, 1.0, 0.0},    // Dry/wet
     {0.0, 1.0, 0.0},    // Speed
     {0.0, 1.0, 0.0},    // Speed range
+    {0.0, 4.0, 1.0},    // Speed type
+    {0.0, 1.0, 0.0},    // Speed amount
     {-1.0, 1.0, 0.0},   // Spin
     {0.0, 2.0, 0.0},    // Spin range
+    {0.0, 4.0, 1.0},    // Spin type
+    {0.0, 1.0, 0.0},    // Spin amount
     {0.0, 1.0, 0.0},    // FX1: Gain
     {0.0, 1.0, 0.0},    // First
     {0.0, 1.0, 0.0},    // Last

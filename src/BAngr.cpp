@@ -26,6 +26,9 @@
 #include "ControllerLimits.hpp"
 
 #define LIMIT(g , min, max) ((g) > (max) ? (max) : ((g) < (min) ? (min) : (g)))
+#define CO2DB(x) (20.0f * log10f ((x)))
+
+const float flexTime[NR_FLEX] = {1.0f, 0.05f};
 
 BAngr::BAngr (double samplerate, const LV2_Feature* const* features) :
 	map(NULL),
@@ -38,10 +41,20 @@ BAngr::BAngr (double samplerate, const LV2_Feature* const* features) :
 	count (0),
 	fader (0.0f),
 	speed (0.0f),
-	nspeed (0.5f),
+	speedrand (0.0f),
+	dspeedrand (0.0f),
+	speedflex (0.0f),
 	spin (0.0f),
-	nspin (0.0f),
+	spinrand (0.0f),
+	dspinrand (0.0f),
+	spinflex (0.0f),
+	spindir (1.0f),
 	ang (2.0 * M_PI * bidist (rnd)),
+	speedlevel (0.0f),
+	spinlevel (0.0f),
+	lowpassFilter (rate, 200.0, 8),
+	highpassFilter (rate, 4000.0, 8),
+	bandpassFilter (rate, 200.0, 4000.0, 8),
 	controlPort (nullptr),
 	notifyPort (nullptr),
 	audioInput1 (nullptr), 
@@ -189,18 +202,59 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 		{
 			if (count >= rate)
 			{
-				nspeed = LIMIT (controllers[SPEED] + bidist (rnd) * controllers[SPEED_RANGE], 0.0f, 1.0f);
-				nspin = LIMIT (controllers[SPIN] + bidist (rnd) * controllers[SPIN_RANGE], -1.0f, 1.0f);
+				dspeedrand = bidist (rnd) * controllers[SPEED_RANGE] - speedrand;
+				dspinrand = bidist (rnd) * controllers[SPIN_RANGE] - spinrand;
 				count = 0.0;
 			}
 
 			else count++;
 
+			float dspeedflex;
+			float dspinflex;
+			const int speedtype = controllers[SPEED_TYPE];
+			const int spintype = controllers[SPIN_TYPE];
+
+			// Filter lows, mids, highs for level calculation
+			std::array<float, NR_FLEX> s;
+			s.fill (0.5f * (audioInput1[i] + audioInput2[i]));
+			if ((speedtype == LOWS) || (spintype == LOWS)) s[LOWS] = lowpassFilter.process (s[LOWS]);
+			if ((speedtype == MIDS) || (spintype == MIDS)) s[MIDS] = bandpassFilter.process (s[MIDS]);
+			if ((speedtype == HIGHS) || (spintype == HIGHS)) s[HIGHS] = highpassFilter.process (s[HIGHS]);
+
+			// Calculate change in speed flexibility
+			if (speedtype == RANDOM) dspeedflex = dspeedrand * (1.0f / (flexTime[speedtype] * rate));
+			else 
+			{
+				// Calculate level
+				const float speedDb = CO2DB (0.5f * (fabsf (s[speedtype])));
+				speedlevel = (1.0 - 1.0 / (flexTime[LEVEL] * rate)) * speedlevel + 1.0 / (flexTime[LEVEL] * rate) * (LIMIT (speedDb, -50.0f, -10.0f) + 50.0f) / 40.0f;
+
+				dspeedflex = (2.0f * speedlevel - 1.0f) * controllers[SPEED_RANGE] - speedflex;
+			}
+
+			// Calculate change in spin flexibility
+			if (spintype == RANDOM) dspinflex =  dspinrand * (1.0f / (flexTime[spintype] * rate));
+			else
+			{
+				// Calculate level
+				const float spinDb = CO2DB (0.5 * (fabsf (s[spintype])));
+				spinlevel = (1.0 - 1.0 / (flexTime[LEVEL] * rate)) * spinlevel + 1.0 / (flexTime[LEVEL] * rate) * (LIMIT (spinDb, -50.0f, -10.0f) + 50.0f) / 40.0f;
+
+				if (spinlevel < 0.001f) spindir = (bidist (rnd) >= 0.0f ? 1.0f : -1.0f);
+				dspinflex = spindir * spinlevel * controllers[SPIN_RANGE] - spinflex;
+			}; 
+
 			// Update speed
-			speed = (1.0 - 1.0 / rate) * speed + (1.0 / rate) * nspeed;
+			speedrand += (1.0f / rate) * dspeedrand;
+			speedflex += dspeedflex;
+			speed = controllers[SPEED] + controllers[SPEED_AMOUNT] * speedflex + (1.0f - controllers[SPEED_AMOUNT]) * speedrand;
+			speed = LIMIT (speed, 0.0f, 1.0f);
 
 			// Update ang
-			spin = (1.0 - 1.0 / rate) * spin + (1.0 / rate) * nspin;
+			spinrand += (1.0f / rate) * dspinrand;
+			spinflex += dspinflex;
+			spin = controllers[SPIN] + controllers[SPIN_AMOUNT] * spinflex + (1.0f - controllers[SPIN_AMOUNT]) * spinrand;
+			spin = LIMIT (spin, -1.0f, 1.0f);
 			ang += 2.0 * M_PI * (10.0 / rate) * spin;
 
 			// Calulate new positions

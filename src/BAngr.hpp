@@ -33,9 +33,13 @@
 #include <lv2/lv2plug.in/ns/ext/atom/forge.h>
 
 #include "Definitions.hpp"
+#include "Stereo.hpp"
 #include "Ports.hpp"
 #include "Urids.hpp"
 #include "Airwindows/XRegion.hpp"
+#include "ButterworthLowPassFilter.hpp"
+#include "ButterworthHighPassFilter.hpp"
+#include "ButterworthBandPassFilter.hpp"
 
 
 class BAngr
@@ -59,10 +63,20 @@ private:
 	double count;
 	float fader;
 	float speed;
-	float nspeed;
+	float speedrand;
+	float dspeedrand;
+	float speedflex;
 	float spin;
-	float nspin;
+	float spinrand;
+	float dspinrand;
+	float spinflex;
+	float spindir;
 	float ang;
+	float speedlevel;
+	float spinlevel;
+	ButterworthLowPassFilter lowpassFilter;
+	ButterworthHighPassFilter highpassFilter;
+	ButterworthBandPassFilter bandpassFilter;
 
 	// Control ports
 	LV2_Atom_Sequence* controlPort;

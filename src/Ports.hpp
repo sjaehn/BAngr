@@ -35,9 +35,13 @@ enum BAngrPortIndex
 	DRY_WET		= 1,
 	SPEED		= 2,
 	SPEED_RANGE	= 3,
-	SPIN		= 4,
-	SPIN_RANGE	= 5,
-	FX			= 6,
+	SPEED_TYPE	= 4,
+	SPEED_AMOUNT= 5,
+	SPIN		= 6,
+	SPIN_RANGE	= 7,
+	SPIN_TYPE	= 8,
+	SPIN_AMOUNT	= 9,
+	FX			= 10,
 	NR_FX		= 4,
 
 	PARAM_GAIN	= 0,
@@ -49,6 +53,16 @@ enum BAngrPortIndex
 	NR_PARAMS	= 6,
 
 	NR_CONTROLLERS	= FX + NR_FX * NR_PARAMS
+};
+
+enum BAngrFlexibilityIndex
+{
+	RANDOM		= 0,
+	LEVEL		= 1,
+	LOWS		= 2,
+	MIDS		= 3,
+	HIGHS		= 4,
+	NR_FLEX		= 5
 };
 
 #endif /* PORTS_HPP_ */

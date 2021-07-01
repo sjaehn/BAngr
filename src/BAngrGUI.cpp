@@ -45,7 +45,37 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 	speedDial (370, 460, 60, 60, "dial", 0.5, 0.0, 1.0, 0.0, BIDIRECTIONAL, "%1.2f", ""),
 	speedLabel (370, 520, 60, 20, "label", BANGR_LABEL_SPEED),
 	spinDial (570, 460, 60, 60, "dial", 0.0, -1.0, 1.0, 0.0, BIDIRECTIONAL, "%1.2f", ""),
-	spinLabel (570, 520, 60, 20, "label", BANGR_LABEL_SPIN)
+	spinLabel (570, 520, 60, 20, "label", BANGR_LABEL_SPIN),
+	speedScreen (180, 480, 100, 35, "screen"),
+	speedFlexLabel (220, 520, 100, 20, "label", BANGR_LABEL_FLEXIBILITY),
+	speedTypeListbox 
+	(
+		280, 490, 80, 20, 0, -120, 80, 120, "menu", 
+		BItems::ItemList 
+		({
+			{RANDOM, BANGR_LABEL_RANDOM}, 
+			{LEVEL, BANGR_LABEL_LEVEL},
+			{LOWS, BANGR_LABEL_LOWS},
+			{MIDS, BANGR_LABEL_MIDS},
+			{HIGHS, BANGR_LABEL_HIGHS}
+		}), 
+		0),
+	speedAmountSlider (200, 485, 80, 20, "slider", 0.0, 0.0, 1.0, 0.0, "%1.2f"),
+	spinScreen (640, 480, 100, 35, "screen"),
+	spinFlexLabel (680, 520, 100, 20, "label", BANGR_LABEL_FLEXIBILITY),
+	spinTypeListbox 
+	(
+		740, 490, 80, 20, 0, -120, 80, 120, "menu",
+		BItems::ItemList 
+		({
+			{RANDOM, BANGR_LABEL_RANDOM}, 
+			{LEVEL, BANGR_LABEL_LEVEL},
+			{LOWS, BANGR_LABEL_LOWS},
+			{MIDS, BANGR_LABEL_MIDS},
+			{HIGHS, BANGR_LABEL_HIGHS}
+		}), 
+		0),
+	spinAmountSlider (660, 485, 80, 20, "slider", 0.0, 0.0, 1.0, 0.0, "%1.2f")
 {
 	// Init param widgets
 	for (int i = 0; i < NR_FX; ++i)
@@ -70,8 +100,12 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 	controllerWidgets[DRY_WET] = &drywetDial;
 	controllerWidgets[SPEED] = &speedDial;
 	controllerWidgets[SPEED_RANGE] = &speedDial.range;
+	controllerWidgets[SPEED_TYPE] = &speedTypeListbox;
+	controllerWidgets[SPEED_AMOUNT] = &speedAmountSlider;
 	controllerWidgets[SPIN] = &spinDial;
 	controllerWidgets[SPIN_RANGE] = &spinDial.range;
+	controllerWidgets[SPIN_TYPE] = &spinTypeListbox;
+	controllerWidgets[SPIN_AMOUNT] = &spinAmountSlider;
 
 	for (int i = 0; i < NR_FX; ++i)
 	{
@@ -83,6 +117,7 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 
 	// Configure widgets
 	cursor.setDraggable (true);
+
 
 	// Set callbacks
 	for (BWidgets::ValueWidget* c : controllerWidgets) c->setCallbackFunction (BEvents::EventType::VALUE_CHANGED_EVENT, BAngrGUI::valueChangedCallback);
@@ -113,6 +148,14 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 	mContainer.add (speedLabel);
 	mContainer.add (spinDial);
 	mContainer.add (spinLabel);
+	mContainer.add (speedFlexLabel);
+	mContainer.add (speedTypeListbox);
+	mContainer.add (speedAmountSlider);
+	mContainer.add (spinFlexLabel);
+	mContainer.add (spinTypeListbox);
+	mContainer.add (spinAmountSlider);
+	mContainer.add (speedScreen);
+	mContainer.add (spinScreen);
 	mContainer.add (cursor);
 	mContainer.add (poweredLabel);
 	mContainer.add (helpButton);
@@ -187,6 +230,7 @@ void BAngrGUI::resizeGUI()
 	// Resize Fonts
 	defaultFont.setFontSize (12 * sz);
 	rFont.setFontSize (12 * sz);
+	lFont.setFontSize (12 * sz);
 
 	// Resize Background
 	cairo_surface_t* surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 1000 * sz, 560 * sz);
@@ -212,6 +256,20 @@ void BAngrGUI::resizeGUI()
 	RESIZE (speedLabel, 370, 520, 60, 20, sz);
 	RESIZE (spinDial, 570, 460, 60, 60, sz);
 	RESIZE (spinLabel, 570, 520, 60, 20, sz);
+	RESIZE (speedScreen, 180, 480, 100, 35, sz);
+	RESIZE (speedFlexLabel, 220, 520, 100, 20, sz);
+	RESIZE (speedTypeListbox, 280, 490, 80, 20, sz);
+	speedTypeListbox.resizeListBox(BUtilities::Point (80 * sz, 120 * sz));
+	speedTypeListbox.moveListBox(BUtilities::Point (0, -120 * sz));
+	speedTypeListbox.resizeListBoxItems(BUtilities::Point (80 * sz, 20 * sz));
+	RESIZE (speedAmountSlider, 200, 485, 80, 20, sz);
+	RESIZE (spinScreen , 640, 480, 100, 35, sz);
+	RESIZE (spinFlexLabel, 680, 520, 100, 20, sz);
+	RESIZE (spinTypeListbox, 740, 490, 80, 20, sz); 
+	spinTypeListbox.resizeListBox(BUtilities::Point (80 * sz, 120 * sz));
+	spinTypeListbox.moveListBox(BUtilities::Point (0, -120 * sz));
+	spinTypeListbox.resizeListBoxItems(BUtilities::Point (80 * sz, 20 * sz));
+	RESIZE (spinAmountSlider, 660, 485, 80, 20, sz);
 
 	for (int i = 0; i < NR_FX; ++i)
 	{
@@ -250,6 +308,14 @@ void BAngrGUI::applyTheme (BStyles::Theme& theme)
 	speedLabel.applyTheme (theme);
 	spinDial.applyTheme (theme);
 	spinLabel.applyTheme (theme);
+	speedScreen.applyTheme (theme);
+	speedFlexLabel.applyTheme (theme);
+	speedTypeListbox.applyTheme (theme);
+	speedAmountSlider.applyTheme (theme);
+	spinScreen.applyTheme (theme);
+	spinFlexLabel.applyTheme (theme);
+	spinTypeListbox.applyTheme (theme);
+	spinAmountSlider.applyTheme (theme);
 
 	for (Fx& f : fx)
 	{
@@ -338,6 +404,18 @@ void BAngrGUI::valueChangedCallback (BEvents::Event* event)
 	// Controllers
 	if (controllerNr >= 0)
 	{
+		if (controllerNr == SPEED_TYPE)
+		{
+			if (value == RANDOM) ui->speedScreen.show();
+			else ui->speedScreen.hide();
+		}
+
+		if (controllerNr == SPIN_TYPE)
+		{
+			if (value == RANDOM) ui->spinScreen.show();
+			else ui->spinScreen.hide();
+		}
+
 		ui->write_function(ui->controller, CONTROLLERS + controllerNr, sizeof(float), 0, &value);
 	}
 }

@@ -30,7 +30,7 @@
 	doap:maintainer <http://www.jahnichen.de/sjaehn#me> ;
 	doap:license <http://usefulinc.com/doap/licenses/gpl> ;
 	lv2:microVersion 0 ;
-	lv2:minorVersion 2 ;
+	lv2:minorVersion 3 ;
         lv2:optionalFeature lv2:hardRTCapable ;
         lv2:binary <BAngr.so> ;
 	lv2:requiredFeature urid:map ;
@@ -105,6 +105,25 @@
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
                 lv2:index 10 ;
+                lv2:symbol "speed_flexibility_type" ;
+                lv2:name "Speed flexibility type" ;
+                lv2:portProperty lv2:integer, lv2:enumeration ;
+		lv2:scalePoint [ rdfs:label "Random"; rdf:value 0 ] ;
+                lv2:scalePoint [ rdfs:label "Level"; rdf:value 1 ] ;
+                lv2:default 0 ;
+                lv2:minimum 0 ;
+                lv2:maximum 1 ;
+        ] , [
+                a lv2:InputPort , lv2:ControlPort ;
+                lv2:index 11 ;
+                lv2:symbol "speed_flexibility_amount" ;
+                lv2:name "Speed flexibility amount" ;
+                lv2:default 0.5 ;
+                lv2:minimum 0.0 ;
+                lv2:maximum 1.0 ;
+        ] , [
+                a lv2:InputPort , lv2:ControlPort ;
+                lv2:index 12 ;
                 lv2:symbol "spin" ;
                 lv2:name "Spin" ;
                 lv2:default 0.0 ;
@@ -112,7 +131,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 11 ;
+                lv2:index 13 ;
                 lv2:symbol "spin_range" ;
                 lv2:name "Spin range" ;
                 lv2:default 0.1 ;
@@ -120,7 +139,29 @@
                 lv2:maximum 2.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 12 ;
+                lv2:index 14 ;
+                lv2:symbol "spin_flexibility_type" ;
+                lv2:name "Spin flexibility type" ;
+                lv2:portProperty lv2:integer, lv2:enumeration ;
+		lv2:scalePoint [ rdfs:label "Random"; rdf:value 0 ] ;
+                lv2:scalePoint [ rdfs:label "Level"; rdf:value 1 ] ;
+                lv2:scalePoint [ rdfs:label "Lows"; rdf:value 2 ] ;
+                lv2:scalePoint [ rdfs:label "Mids"; rdf:value 3 ] ;
+                lv2:scalePoint [ rdfs:label "Highs"; rdf:value 4 ] ;
+                lv2:default 0 ;
+                lv2:minimum 0 ;
+                lv2:maximum 4 ;
+        ] , [
+                a lv2:InputPort , lv2:ControlPort ;
+                lv2:index 15 ;
+                lv2:symbol "spin_flexibility_amount" ;
+                lv2:name "Spin flexibility amount" ;
+                lv2:default 0.5 ;
+                lv2:minimum 0.0 ;
+                lv2:maximum 1.0 ;
+        ] , [
+                a lv2:InputPort , lv2:ControlPort ;
+                lv2:index 16 ;
                 lv2:symbol "fx1_gain" ;
                 lv2:name "FX1 Gain" ;
                 lv2:default 0.5 ;
@@ -128,7 +169,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 13 ;
+                lv2:index 17 ;
                 lv2:symbol "fx1_first" ;
                 lv2:name "FX1 First" ;
                 lv2:default 0.2 ;
@@ -136,7 +177,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 14 ;
+                lv2:index 18 ;
                 lv2:symbol "fx1_last" ;
                 lv2:name "FX1 Last" ;
                 lv2:default 0.1 ;
@@ -144,7 +185,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 15 ;
+                lv2:index 19 ;
                 lv2:symbol "fx1_nuke" ;
                 lv2:name "FX1 Nuke" ;
                 lv2:default 1.0 ;
@@ -152,7 +193,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 16 ;
+                lv2:index 20 ;
                 lv2:symbol "fx1_mix" ;
                 lv2:name "FX1 Dry/wet" ;
                 lv2:default 1.0 ;
@@ -160,7 +201,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 17 ;
+                lv2:index 21 ;
                 lv2:symbol "fx1_pan" ;
                 lv2:name "FX1 Pan" ;
                 lv2:default 0.0 ;
@@ -168,7 +209,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 18 ;
+                lv2:index 22 ;
                 lv2:symbol "fx2_gain" ;
                 lv2:name "FX2 Gain" ;
                 lv2:default 0.5 ;
@@ -176,7 +217,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 19 ;
+                lv2:index 23 ;
                 lv2:symbol "fx2_first" ;
                 lv2:name "FX2 First" ;
                 lv2:default 0.7 ;
@@ -184,7 +225,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 20 ;
+                lv2:index 24 ;
                 lv2:symbol "fx2_last" ;
                 lv2:name "FX2 Last" ;
                 lv2:default 0.8 ;
@@ -192,7 +233,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 21 ;
+                lv2:index 25 ;
                 lv2:symbol "fx2_nuke" ;
                 lv2:name "FX2 Nuke" ;
                 lv2:default 1.0 ;
@@ -200,7 +241,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 22 ;
+                lv2:index 26 ;
                 lv2:symbol "fx2_mix" ;
                 lv2:name "FX2 Dry/wet" ;
                 lv2:default 1.0 ;
@@ -208,7 +249,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 23 ;
+                lv2:index 27 ;
                 lv2:symbol "fx2_pan" ;
                 lv2:name "FX2 Pan" ;
                 lv2:default 0.0 ;
@@ -216,7 +257,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 24 ;
+                lv2:index 28 ;
                 lv2:symbol "fx3_gain" ;
                 lv2:name "FX3 Gain" ;
                 lv2:default 0.5 ;
@@ -224,7 +265,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 25 ;
+                lv2:index 29 ;
                 lv2:symbol "fx3_first" ;
                 lv2:name "FX3 First" ;
                 lv2:default 0.8 ;
@@ -232,7 +273,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 26 ;
+                lv2:index 30 ;
                 lv2:symbol "fx3_last" ;
                 lv2:name "FX3 Last" ;
                 lv2:default 0.8 ;
@@ -240,7 +281,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 27 ;
+                lv2:index 31 ;
                 lv2:symbol "fx3_nuke" ;
                 lv2:name "FX3 Nuke" ;
                 lv2:default 0.2 ;
@@ -248,7 +289,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 28 ;
+                lv2:index 32 ;
                 lv2:symbol "fx3_mix" ;
                 lv2:name "FX3 Dry/wet" ;
                 lv2:default 1.0 ;
@@ -256,7 +297,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 29 ;
+                lv2:index 33 ;
                 lv2:symbol "fx3_pan" ;
                 lv2:name "FX3 Pan" ;
                 lv2:default 0.5 ;
@@ -264,7 +305,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 30 ;
+                lv2:index 34 ;
                 lv2:symbol "fx4_gain" ;
                 lv2:name "FX4 Gain" ;
                 lv2:default 0.5 ;
@@ -272,7 +313,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 31 ;
+                lv2:index 35 ;
                 lv2:symbol "fx4_first" ;
                 lv2:name "FX4 First" ;
                 lv2:default 0.2 ;
@@ -280,7 +321,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 32 ;
+                lv2:index 36 ;
                 lv2:symbol "fx4_last" ;
                 lv2:name "FX4 Last" ;
                 lv2:default 0.8 ;
@@ -288,7 +329,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 33 ;
+                lv2:index 37 ;
                 lv2:symbol "fx4_nuke" ;
                 lv2:name "FX4 Nuke" ;
                 lv2:default 0.2 ;
@@ -296,7 +337,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 34 ;
+                lv2:index 38 ;
                 lv2:symbol "fx4_mix" ;
                 lv2:name "FX4 Dry/wet" ;
                 lv2:default 1.0 ;
@@ -304,7 +345,7 @@
                 lv2:maximum 1.0 ;
         ] , [
                 a lv2:InputPort , lv2:ControlPort ;
-                lv2:index 35 ;
+                lv2:index 39 ;
                 lv2:symbol "fx4_pan" ;
                 lv2:name "FX4 Pan" ;
                 lv2:default -0.5 ;

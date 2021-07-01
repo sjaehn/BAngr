@@ -28,6 +28,8 @@
 #include "BWidgets/Widget.hpp"
 #include "BWidgets/Window.hpp"
 #include "BWidgets/Label.hpp"
+#include "BWidgets/PopupListBox.hpp"
+#include "BWidgets/HSliderValue.hpp"
 #include "Dial.hpp"
 #include "DialRange.hpp"
 #include "Dot.hpp"
@@ -110,6 +112,14 @@ private:
 	BWidgets::Label speedLabel;
 	DialRange spinDial;
 	BWidgets::Label spinLabel;
+	BWidgets::Widget speedScreen;
+	BWidgets::Label speedFlexLabel;
+	BWidgets::PopupListBox speedTypeListbox;
+	BWidgets::HSliderValue speedAmountSlider;
+	BWidgets::Widget spinScreen;
+	BWidgets::Label spinFlexLabel;
+	BWidgets::PopupListBox spinTypeListbox;
+	BWidgets::HSliderValue spinAmountSlider;
 
 	struct Fx
 	{
@@ -126,11 +136,13 @@ private:
 	BColors::ColorSet fgColors = BANGR_FG_COLORS;
 	BColors::ColorSet txColors = BANGR_TX_COLORS;
 	BColors::ColorSet bgColors = BANGR_BG_COLORS;
+	BColors::ColorSet noColors = BANGR_NO_COLORS;
 
-	//BStyles::Border border = {{ink, 1.0}, 0.0, 2.0, 0.0};
+	BStyles::Border menuBorder = {{*noColors.getColor (BColors::NORMAL), 1.0}, 0.0, 0.0, 0.0};
+	BStyles::Border menuBorder2 = {{*bgColors.getColor (BColors::NORMAL), 1.0}, 0.0, 0.0, 0.0};
+	BStyles::Border labelBorder = {BStyles::noLine, 4.0, 0.0, 0.0};
 	BStyles::Fill widgetBg = BStyles::noFill;
 	BStyles::Fill screenBg = BStyles::Fill (BColors::Color (BANGR_SCREEN_BG_COLORS));
-	//BStyles::Border screenBorder = BStyles::Border (BStyles::Line (BColors::Color (0.0, 0.0, 0.0, 0.75), 4.0));
 	BStyles::Font defaultFont =	BStyles::Font 
 	(
 		"Sans", 
@@ -148,6 +160,16 @@ private:
 		CAIRO_FONT_WEIGHT_NORMAL, 
 		12.0,
 		BStyles::TEXT_ALIGN_RIGHT, 
+		BStyles::TEXT_VALIGN_MIDDLE
+	);
+
+	BStyles::Font lFont =	BStyles::Font 
+	(
+		"Sans", 
+		CAIRO_FONT_SLANT_NORMAL, 
+		CAIRO_FONT_WEIGHT_NORMAL, 
+		12.0,
+		BStyles::TEXT_ALIGN_LEFT, 
 		BStyles::TEXT_VALIGN_MIDDLE
 	);
 
@@ -171,17 +193,43 @@ private:
 				 		 {"border", STYLEPTR (&BStyles::noBorder)}}},
 		{"widget", 		{{"uses", STYLEPTR (&defaultStyles)}}},
 		{"widget/focus",{{"uses", STYLEPTR (&focusStyles)}}},
+		{"screen", 		{{"uses", STYLEPTR (&defaultStyles)},
+						 {"background", STYLEPTR (&screenBg)}}},
 		{"dial", 		{{"uses", STYLEPTR (&defaultStyles)},
 						 {"fgcolors", STYLEPTR (&fgColors)},
 						 {"bgcolors", STYLEPTR (&bgColors)},
 						 {"textcolors", STYLEPTR (&txColors)},
 						 {"font", STYLEPTR (&defaultFont)}}},
 		{"dial/focus", 	{{"uses", STYLEPTR (&focusStyles)}}},
+		{"slider", 		{{"uses", STYLEPTR (&defaultStyles)},
+						 {"fgcolors", STYLEPTR (&fgColors)},
+						 {"bgcolors", STYLEPTR (&bgColors)},
+						 {"textcolors", STYLEPTR (&txColors)},
+						 {"font", STYLEPTR (&defaultFont)}}},
+		{"slider/focus",{{"uses", STYLEPTR (&focusStyles)}}},
 		{"label",	 	{{"uses", STYLEPTR (&labelStyles)}}},
 		{"rlabel",	 	{{"uses", STYLEPTR (&labelStyles)},
 						 {"font", STYLEPTR (&rFont)}}},
 		{"dot", 		{{"uses", STYLEPTR (&defaultStyles)},
-						 {"fgcolors", STYLEPTR (&txColors)}}}
+						 {"fgcolors", STYLEPTR (&txColors)}}},
+		{"menu",	 	{{"border", STYLEPTR (&menuBorder)},
+					 	 {"background", STYLEPTR (&screenBg)}}},
+		{"menu/item",	{{"uses", STYLEPTR (&defaultStyles)},
+					 	 {"border", STYLEPTR (&labelBorder)},
+					 	 {"textcolors", STYLEPTR (&BColors::whites)},
+					 	 {"font", STYLEPTR (&lFont)}}},
+		{"menu/button",	{{"border", STYLEPTR (&menuBorder)},
+					 	 {"background", STYLEPTR (&screenBg)},
+					 	 {"bgcolors", STYLEPTR (&txColors)}}},
+		{"menu/listbox",{{"border", STYLEPTR (&menuBorder2)},
+					 	 {"background", STYLEPTR (&screenBg)}}},
+		{"menu/listbox/item",	{{"uses", STYLEPTR (&defaultStyles)},
+					 	 {"border", STYLEPTR (&labelBorder)},
+					 	 {"textcolors", STYLEPTR (&BColors::whites)},
+					 	 {"font", STYLEPTR (&lFont)}}},
+		{"menu/listbox/button",	{{"border", STYLEPTR (&menuBorder)},
+					 	 {"background", STYLEPTR (&screenBg)},
+					 	 {"bgcolors", STYLEPTR (&noColors)}}}
 	});
 };
 

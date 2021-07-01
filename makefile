@@ -72,6 +72,18 @@ B_FILES = $(addprefix $(BUNDLE)/, $(ROOTFILES) $(INCFILES))
 DSP_INCL = src/Airwindows/XRegion.cpp
 
 GUI_CXX_INCL = \
+	src/BWidgets/PopupListBox.cpp \
+	src/BWidgets/ListBox.cpp \
+	src/BWidgets/ChoiceBox.cpp \
+	src/BWidgets/BItems.cpp \
+	src/BWidgets/ItemBox.cpp \
+	src/BWidgets/DownButton.cpp \
+	src/BWidgets/UpButton.cpp \
+	src/BWidgets/Button.cpp \
+	src/BWidgets/HSliderValue.cpp \
+	src/BWidgets/HSlider.cpp \
+	src/BWidgets/Knob.cpp \
+	src/BWidgets/HScale.cpp \
 	src/BWidgets/ToggleButton.cpp \
 	src/BWidgets/Button.cpp \
 	src/BWidgets/RangeWidget.cpp \
@@ -112,6 +124,9 @@ $(BUNDLE): clean $(DSP_OBJ) $(GUI_OBJ)
 all: $(BUNDLE)
 
 $(DSP_OBJ): $(DSP_SRC)
+ifeq (,$(findstring O3,$(CPPFLAGS)))
+	@echo "Recommendation: Build DSP with parameter CPPFLAGS+=-O3"
+endif
 	@echo -n Build $(BUNDLE) DSP...
 	@mkdir -p $(BUNDLE)
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $(DSPCFLAGS) -Wl,--start-group $(DSPLFLAGS) $< $(DSP_INCL) -Wl,--end-group -o $(BUNDLE)/$@
