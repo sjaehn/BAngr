@@ -51,7 +51,9 @@ BAngr::BAngr (double samplerate, const LV2_Feature* const* features) :
 	spindir (1.0f),
 	ang (2.0 * M_PI * bidist (rnd)),
 	speedlevel (0.0f),
+	speedmaxlevel (0.1f),
 	spinlevel (0.0f),
+	spinmaxlevel (0.1f),
 	lowpassFilter (rate, 200.0, 8),
 	highpassFilter (rate, 4000.0, 8),
 	bandpassFilter (rate, 200.0, 4000.0, 8),
@@ -226,10 +228,25 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 			else 
 			{
 				// Calculate level
-				const float speedDb = CO2DB (0.5f * (fabsf (s[speedtype])));
-				speedlevel = (1.0 - 1.0 / (flexTime[LEVEL] * rate)) * speedlevel + 1.0 / (flexTime[LEVEL] * rate) * (LIMIT (speedDb, -50.0f, -10.0f) + 50.0f) / 40.0f;
+				const float coeff = fabsf (s[speedtype]);
+				if (coeff >= speedmaxlevel) speedmaxlevel = coeff;
+				else speedmaxlevel = (1.0 - 1.0 / (4.0 * rate)) * speedmaxlevel;
+				speedlevel = (1.0 - 1.0 / (flexTime[LEVEL] * rate)) * speedlevel + 1.0 / (flexTime[LEVEL] * rate) * (2.0 * coeff / speedmaxlevel);
 
-				dspeedflex = (2.0f * speedlevel - 1.0f) * controllers[SPEED_RANGE] - speedflex;
+				dspeedflex = (2.0f * LIMIT (speedlevel, 0.0f, 1.0f) - 1.0f) * controllers[SPEED_RANGE] - speedflex;
+
+				// Command line meter (for debugging)
+				/*
+				if (int(count) % 1000 == 0) 
+				{
+					char s[41];
+					memset (s, ' ', 40);
+					int x = int (40 * LIMIT (speedlevel, 0.0f, 1.0f));
+					memset (s, '.', x);
+					s[40] = 0;
+					fprintf (stderr, "\r%s", s);
+				}
+				*/
 			}
 
 			// Calculate change in spin flexibility
@@ -237,11 +254,14 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 			else
 			{
 				// Calculate level
-				const float spinDb = CO2DB (0.5 * (fabsf (s[spintype])));
-				spinlevel = (1.0 - 1.0 / (flexTime[LEVEL] * rate)) * spinlevel + 1.0 / (flexTime[LEVEL] * rate) * (LIMIT (spinDb, -50.0f, -10.0f) + 50.0f) / 40.0f;
+				const float coeff = fabsf (s[spintype]);
+				if (coeff >= spinmaxlevel) spinmaxlevel = coeff;
+				else spinmaxlevel = (1.0 - 1.0 / (4.0 * rate)) * spinmaxlevel;
+				const float nspinlevel = (1.0 - 1.0 / (flexTime[LEVEL] * rate)) * spinlevel + 1.0 / (flexTime[LEVEL] * rate) * (2.0 * coeff / spinmaxlevel);
 
-				if (spinlevel < 0.001f) spindir = (bidist (rnd) >= 0.0f ? 1.0f : -1.0f);
-				dspinflex = spindir * spinlevel * controllers[SPIN_RANGE] - spinflex;
+				if ((spinlevel >= 0.2f) && (nspinlevel < 0.2f)) spindir = (bidist (rnd) >= 0.0f ? spindir : -spindir);
+				spinlevel = nspinlevel;
+				dspinflex = spindir * LIMIT (spinlevel, 0.0f, 1.0f) * controllers[SPIN_RANGE] - spinflex;
 			}; 
 
 			// Update speed

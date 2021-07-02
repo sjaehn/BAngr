@@ -12,7 +12,9 @@ Key features:
 
 ## Installation
 
-a) Install the bangr package for your system (once available)
+a) Install the bangr package for your system
+* [Arch](https://aur.archlinux.org/packages/bangr.lv2-git) by SpotlightKid
+* [FreeBSD](https://www.freshports.org/audio/bangr-lv2) by yurivict
 
 b) Build your own binaries in the following three steps.
 
@@ -41,8 +43,7 @@ make
 sudo make install
 ```
 
-**Optional:** Standard `make` and `make install` parameters are supported. **Compiling using `make CPPFLAGS+=-O3`**
-**is recommended to improve the plugin performance.** Alternatively, you may build a debugging version using
+**Optional:** Standard `make` and `make install` parameters are supported. You may build a debugging version using
 `make CPPFLAGS+=-g`. For installation into an alternative directory (e.g., /usr/lib/lv2/), change the
 variable `PREFIX` while installing: `sudo make install PREFIX=/usr`. If you want to freely choose the
 install target directory, change the variable `LV2DIR` (e.g., `make install LV2DIR=~/.lv2`) or even define
@@ -77,8 +78,8 @@ the respective instance.
 The flexible amount of speed and spin can be increased or decreased by dragging or scrolling
 the white arrows on the outside the repective dial. The behaviour of the flexible amount can
 be controlled by the audio input signal. Set the type (level, lows, mids, highs) and the amount 
-of control (from 0 = random to 1 = full control) of, its lows, its mids, or its hights. And
-let the white pont move to the music. Or leave everything in the random state.
+of control (from 0 = random to 1 = full control). And let the white pont move to the music. 
+Or leave everything in the random state.
 
 More about XRegion at http://www.airwindows.com/xregion/ .
 
@@ -96,7 +97,7 @@ and edit the parameters.
 ## What's new
 
 * Flexibility controls
-* Recomendation to compile with `-O3`
+* Compile DSP with `-O3 -ffast-math` on default
 
 
 ## TODO

@@ -124,12 +124,9 @@ $(BUNDLE): clean $(DSP_OBJ) $(GUI_OBJ)
 all: $(BUNDLE)
 
 $(DSP_OBJ): $(DSP_SRC)
-ifeq (,$(findstring O3,$(CPPFLAGS)))
-	@echo "Recommendation: Build DSP with parameter CPPFLAGS+=-O3"
-endif
 	@echo -n Build $(BUNDLE) DSP...
 	@mkdir -p $(BUNDLE)
-	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $(DSPCFLAGS) -Wl,--start-group $(DSPLFLAGS) $< $(DSP_INCL) -Wl,--end-group -o $(BUNDLE)/$@
+	@$(CXX) -O3 -ffast-math $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $(DSPCFLAGS) -Wl,--start-group $(DSPLFLAGS) $< $(DSP_INCL) -Wl,--end-group -o $(BUNDLE)/$@
 	@echo \ done.
 
 $(GUI_OBJ): $(GUI_SRC)

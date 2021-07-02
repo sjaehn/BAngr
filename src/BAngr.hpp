@@ -73,7 +73,9 @@ private:
 	float spindir;
 	float ang;
 	float speedlevel;
+	float speedmaxlevel;
 	float spinlevel;
+	float spinmaxlevel;
 	ButterworthLowPassFilter lowpassFilter;
 	ButterworthHighPassFilter highpassFilter;
 	ButterworthBandPassFilter bandpassFilter;
