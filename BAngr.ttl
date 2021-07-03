@@ -26,10 +26,10 @@
 <https://www.jahnichen.de/plugins/lv2/BAngr>
         a lv2:Plugin, lv2:DistortionPlugin, doap:Project ;
         doap:name "B.Angr" ;
-        rdfs:comment "A multi-dimensional dynamicly distorted staggered multi-bandpass LV2 plugin, for extreme soundmangling. Based on Airwindows XRange." ;
+        rdfs:comment "A multi-dimensional dynamicly distorted staggered multi-bandpass LV2 plugin, for extreme soundmangling. Based on Airwindows XRegion." ;
 	doap:maintainer <http://www.jahnichen.de/sjaehn#me> ;
 	doap:license <http://usefulinc.com/doap/licenses/gpl> ;
-	lv2:microVersion 0 ;
+	lv2:microVersion 2 ;
 	lv2:minorVersion 3 ;
         lv2:optionalFeature lv2:hardRTCapable ;
         lv2:binary <BAngr.so> ;
@@ -260,7 +260,7 @@
                 lv2:index 28 ;
                 lv2:symbol "fx3_gain" ;
                 lv2:name "FX3 Gain" ;
-                lv2:default 0.5 ;
+                lv2:default 0.75 ;
                 lv2:minimum 0.0 ;
                 lv2:maximum 1.0 ;
         ] , [
@@ -268,7 +268,7 @@
                 lv2:index 29 ;
                 lv2:symbol "fx3_first" ;
                 lv2:name "FX3 First" ;
-                lv2:default 0.8 ;
+                lv2:default 0.5 ;
                 lv2:minimum 0.0 ;
                 lv2:maximum 1.0 ;
         ] , [
@@ -284,7 +284,7 @@
                 lv2:index 31 ;
                 lv2:symbol "fx3_nuke" ;
                 lv2:name "FX3 Nuke" ;
-                lv2:default 0.2 ;
+                lv2:default 0.5 ;
                 lv2:minimum 0.0 ;
                 lv2:maximum 1.0 ;
         ] , [
@@ -324,7 +324,7 @@
                 lv2:index 36 ;
                 lv2:symbol "fx4_last" ;
                 lv2:name "FX4 Last" ;
-                lv2:default 0.8 ;
+                lv2:default 0.5 ;
                 lv2:minimum 0.0 ;
                 lv2:maximum 1.0 ;
         ] , [
