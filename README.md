@@ -5,7 +5,8 @@ Based on Airwindows XRegion.
 Key features:
 * Multi-bandpass / distortion
 * Cross-fading between four instances
-* Automatic or user-controlled
+* Automatic or user-controlled flow
+* Optionally follows the beat
 
 ![screenshot](https://raw.githubusercontent.com/sjaehn/BAngr/master/doc/screenshot.png "Screenshot from B.Angr")
 
@@ -97,6 +98,8 @@ and edit the parameters.
 ## What's new
 
 * Flexibility controls
+  * Type: Random, level, lows, mids, or highs
+  * Amount
 * Compile DSP with `-O3 -ffast-math` on default
 
 
