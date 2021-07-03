@@ -231,6 +231,7 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 				const float coeff = fabsf (s[speedtype]);
 				if (coeff >= speedmaxlevel) speedmaxlevel = coeff;
 				else speedmaxlevel = (1.0 - 1.0 / (4.0 * rate)) * speedmaxlevel;
+				if (speedmaxlevel < 0.0001f) speedmaxlevel = 0.0001f;	// Limit to -80 db to prevent div by zero
 				speedlevel = (1.0 - 1.0 / (flexTime[LEVEL] * rate)) * speedlevel + 1.0 / (flexTime[LEVEL] * rate) * (2.0 * coeff / speedmaxlevel);
 
 				dspeedflex = (2.0f * LIMIT (speedlevel, 0.0f, 1.0f) - 1.0f) * controllers[SPEED_RANGE] - speedflex;
@@ -257,6 +258,7 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 				const float coeff = fabsf (s[spintype]);
 				if (coeff >= spinmaxlevel) spinmaxlevel = coeff;
 				else spinmaxlevel = (1.0 - 1.0 / (4.0 * rate)) * spinmaxlevel;
+				if (spinmaxlevel < 0.0001f) spinmaxlevel = 0.0001f;	// Limit to -80 db to prevent div by zero
 				const float nspinlevel = (1.0 - 1.0 / (flexTime[LEVEL] * rate)) * spinlevel + 1.0 / (flexTime[LEVEL] * rate) * (2.0 * coeff / spinmaxlevel);
 
 				if ((spinlevel >= 0.2f) && (nspinlevel < 0.2f)) spindir = (bidist (rnd) >= 0.0f ? spindir : -spindir);
