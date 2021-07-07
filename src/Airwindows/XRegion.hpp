@@ -49,11 +49,11 @@ public:
 
 private:
     double rate;
-    long double biquad[15];
-	long double biquadA[15];
-	long double biquadB[15];
-	long double biquadC[15];
-	long double biquadD[15];
+    float biquad[15];
+	float biquadA[15];
+	float biquadB[15];
+	float biquadC[15];
+	float biquadD[15];
 	uint32_t fpdL;
 	uint32_t fpdR;
     float params[6];

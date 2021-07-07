@@ -97,13 +97,9 @@ and edit the parameters.
 
 ## What's new
 
+* Faster
 * Support lv2:Parameters
 * Cursor XY can now externally be controlled
-
-
-## TODO
-
-* Reduce CPU load
 
 
 ## Acknowledgments
