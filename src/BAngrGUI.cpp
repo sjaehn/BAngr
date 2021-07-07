@@ -164,11 +164,14 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 
 	//Scan host features for URID map
 	LV2_URID_Map* m = NULL;
+	// unmap = NULL;
+
 	for (int i = 0; features[i]; ++i)
 	{
 		if (strcmp(features[i]->URI, LV2_URID__map) == 0) m = (LV2_URID_Map*) features[i]->data;
+		// if (strcmp(features[i]->URI, LV2_URID__unmap) == 0) unmap = (LV2_URID_Unmap*) features[i]->data;
 	}
-	if (!m) throw std::invalid_argument ("Host does not support urid:map");
+	if ((!m) /*|| (!unmap)*/ ) throw std::invalid_argument ("Host does not support urid:map");
 
 	//Map URIS
 	map = m;
@@ -189,27 +192,37 @@ void BAngrGUI::portEvent(uint32_t port_index, uint32_t buffer_size, uint32_t for
 	if ((format == urids.atom_eventTransfer) && (port_index == NOTIFY))
 	{
 		const LV2_Atom* atom = (const LV2_Atom*) buffer;
-		if ((atom->type == urids.atom_Blank) || (atom->type == urids.atom_Object))
+		if (lv2_atom_forge_is_object_type(&forge, atom->type))
 		{
 			const LV2_Atom_Object* obj = (const LV2_Atom_Object*) atom;
-
-			// Monitor notification
-			if (obj->body.otype == urids.bangr_cursorEvent)
+			
+			if (obj->body.otype == urids.patch_Set)
 			{
-				const LV2_Atom *ox = NULL, *oy = NULL;
+				const LV2_Atom* property = NULL;
+      			const LV2_Atom* value    = NULL;
 				lv2_atom_object_get
 				(
-					obj, 
-					urids.bangr_xcursor, &ox, 
-					urids.bangr_ycursor, &oy,
-					NULL
+					obj,
+                    urids.patch_property, &property,
+                    urids.patch_value, &value,
+                    NULL
 				);
-				
-				if (ox && (ox->type == urids.atom_Float) && oy && (oy->type == urids.atom_Float))
+
+				if (property && (property->type == urids.atom_URID) && value)
 				{
-					const float xcursor = ((LV2_Atom_Float*)ox)->body;
-					const float ycursor = ((LV2_Atom_Float*)oy)->body;
-					cursor.moveTo ((400.0 + xcursor * 200.0) * sz - 0.5 * cursor.getWidth(), (180.0 + ycursor * 200.0) * sz - 0.5 * cursor.getHeight());
+					const uint32_t key = ((const LV2_Atom_URID*)property)->body;
+					
+					if ((key == urids.bangr_xcursor) && (value->type == urids.atom_Float)) 
+					{
+						const float xcursor = ((LV2_Atom_Float*)value)->body;
+						cursor.moveTo ((400.0 + xcursor * 200.0) * sz - 0.5 * cursor.getWidth(), cursor.getPosition().y);
+					}
+
+					else if ((key == urids.bangr_ycursor) && (value->type == urids.atom_Float)) 
+					{
+						const float ycursor = ((LV2_Atom_Float*)value)->body;
+						cursor.moveTo (cursor.getPosition().x, (180.0 + ycursor * 200.0) * sz - 0.5 * cursor.getHeight());
+					}
 				}
 			}
 		}
@@ -356,26 +369,59 @@ void BAngrGUI::sendUiOff ()
 
 void BAngrGUI::sendCursor ()
 {
+	sendCursorOn();
+	sendXCursor();
+	sendYCursor();
+}
+
+void BAngrGUI::sendXCursor ()
+{
 	uint8_t obj_buf[128];
 	lv2_atom_forge_set_buffer(&forge, obj_buf, sizeof(obj_buf));
 
 	LV2_Atom_Forge_Frame frame;
-	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_cursorEvent);
-	lv2_atom_forge_key(&forge, urids.bangr_xcursor);
+	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.patch_Set);
+	lv2_atom_forge_key(&forge, urids.patch_property);
+	lv2_atom_forge_urid(&forge, urids.bangr_xcursor);
+	lv2_atom_forge_key(&forge, urids.patch_value);
 	lv2_atom_forge_float(&forge, ((cursor.getPosition().x + 0.5 * cursor.getWidth()) / sz - 400.0) / 200.0);
-	lv2_atom_forge_key(&forge, urids.bangr_ycursor);
+	lv2_atom_forge_pop(&forge, &frame);
+	write_function(controller, CONTROL, lv2_atom_total_size(msg), urids.atom_eventTransfer, msg);
+}
+
+void BAngrGUI::sendYCursor ()
+{
+	uint8_t obj_buf[128];
+	lv2_atom_forge_set_buffer(&forge, obj_buf, sizeof(obj_buf));
+
+	LV2_Atom_Forge_Frame frame;
+	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.patch_Set);
+	lv2_atom_forge_key(&forge, urids.patch_property);
+	lv2_atom_forge_urid(&forge, urids.bangr_ycursor);
+	lv2_atom_forge_key(&forge, urids.patch_value);
 	lv2_atom_forge_float(&forge, ((cursor.getPosition().y + 0.5 * cursor.getHeight()) / sz - 180.0) / 200.0);
+	lv2_atom_forge_pop(&forge, &frame);
+	write_function(controller, CONTROL, lv2_atom_total_size(msg), urids.atom_eventTransfer, msg);
+}
+
+void BAngrGUI::sendCursorOn ()
+{
+	uint8_t obj_buf[64];
+	lv2_atom_forge_set_buffer(&forge, obj_buf, sizeof(obj_buf));
+
+	LV2_Atom_Forge_Frame frame;
+	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_cursorOn);
 	lv2_atom_forge_pop(&forge, &frame);
 	write_function(controller, CONTROL, lv2_atom_total_size(msg), urids.atom_eventTransfer, msg);
 }
 
 void BAngrGUI::sendCursorOff ()
 {
-	uint8_t obj_buf[128];
+	uint8_t obj_buf[64];
 	lv2_atom_forge_set_buffer(&forge, obj_buf, sizeof(obj_buf));
 
 	LV2_Atom_Forge_Frame frame;
-	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_cursorEvent);
+	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_cursorOff);
 	lv2_atom_forge_pop(&forge, &frame);
 	write_function(controller, CONTROL, lv2_atom_total_size(msg), urids.atom_eventTransfer, msg);
 }

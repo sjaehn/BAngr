@@ -159,23 +159,33 @@ void BAngr::run (uint32_t n_samples)
 				listen = false;
 			}
 
-			// Cursor
-			else if (obj->body.otype == urids.bangr_cursorEvent)
+			else if (obj->body.otype == urids.bangr_cursorOn) listen = true;
+			else if (obj->body.otype == urids.bangr_cursorOff) listen = false;
+
+			else if (obj->body.otype == urids.patch_Set)
 			{
-				LV2_Atom *ox = NULL, *oy = NULL;
-				lv2_atom_object_get (obj,
-						     urids.bangr_xcursor, &ox,
-						     urids.bangr_ycursor, &oy,
-						     NULL);
+				const LV2_Atom* property = NULL;
+      			const LV2_Atom* value    = NULL;
+				lv2_atom_object_get
+				(
+					obj,
+                    urids.patch_property, &property,
+                    urids.patch_value, &value,
+                    NULL
+				);
 
-				if (ox && (ox->type == urids.atom_Float) && oy && (oy->type == urids.atom_Float))
+				if (property && (property->type == urids.atom_URID) && value)
 				{
-					xcursor = ((LV2_Atom_Float*)ox)->body;
-					ycursor = ((LV2_Atom_Float*)oy)->body;
-					listen = true;
+					const uint32_t key = ((const LV2_Atom_URID*)property)->body;
+					
+					if ((key == urids.bangr_xcursor) && (value->type == urids.atom_Float)) xcursor = ((LV2_Atom_Float*)value)->body;
+					else if ((key == urids.bangr_ycursor) && (value->type == urids.atom_Float)) ycursor = ((LV2_Atom_Float*)value)->body;
 				}
+			}
 
-				else listen = false;
+			else if (obj->body.otype == urids.patch_Get)
+			{
+
 			}
 
 			// Play samples
@@ -357,10 +367,18 @@ void BAngr::notifyCursor()
 {
 	LV2_Atom_Forge_Frame frame;
 	lv2_atom_forge_frame_time(&forge, 0);
-	lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_cursorEvent);
-	lv2_atom_forge_key(&forge, urids.bangr_xcursor);
+	lv2_atom_forge_object(&forge, &frame, 0, urids.patch_Set);
+	lv2_atom_forge_key(&forge, urids.patch_property);
+	lv2_atom_forge_urid(&forge, urids.bangr_xcursor);
+	lv2_atom_forge_key(&forge, urids.patch_value);
 	lv2_atom_forge_float(&forge, xcursor);
-	lv2_atom_forge_key(&forge, urids.bangr_ycursor);
+	lv2_atom_forge_pop(&forge, &frame);
+
+	lv2_atom_forge_frame_time(&forge, 0);
+	lv2_atom_forge_object(&forge, &frame, 0, urids.patch_Set);
+	lv2_atom_forge_key(&forge, urids.patch_property);
+	lv2_atom_forge_urid(&forge, urids.bangr_ycursor);
+	lv2_atom_forge_key(&forge, urids.patch_value);
 	lv2_atom_forge_float(&forge, ycursor);
 	lv2_atom_forge_pop(&forge, &frame);
 }

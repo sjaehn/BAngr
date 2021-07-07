@@ -73,6 +73,9 @@ public:
 	void sendUiOn ();
 	void sendUiOff ();
 	void sendCursor ();
+	void sendXCursor ();
+	void sendYCursor ();
+	void sendCursorOn ();
 	void sendCursorOff ();
 	virtual void onConfigureRequest (BEvents::ExposeEvent* event) override;
 	void applyTheme (BStyles::Theme& theme) override;
@@ -97,6 +100,7 @@ private:
 	LV2_Atom_Forge forge;
 	BAngrURIs urids;
 	LV2_URID_Map* map;
+	// LV2_URID_Unmap* unmap;
 
 	// Widgets
 	BWidgets::Widget mContainer;
