@@ -58,6 +58,7 @@ private:
 	float xcursor;
 	float ycursor;
 	bool listen;
+	int resttime;
 	std::minstd_rand rnd;
 	std::uniform_real_distribution<float> bidist;
 	double count;

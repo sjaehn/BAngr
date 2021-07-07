@@ -36,6 +36,7 @@ BAngr::BAngr (double samplerate, const LV2_Feature* const* features) :
 	xcursor (0.5f),
 	ycursor (0.5f),
 	listen (false),
+	resttime (0),
 	rnd (time (0)), 
 	bidist (-1.0, 1.0),
 	count (0),
@@ -163,8 +164,17 @@ void BAngr::run (uint32_t n_samples)
 				{
 					const uint32_t key = ((const LV2_Atom_URID*)property)->body;
 					
-					if ((key == urids.bangr_xcursor) && (value->type == urids.atom_Float)) xcursor = ((LV2_Atom_Float*)value)->body;
-					else if ((key == urids.bangr_ycursor) && (value->type == urids.atom_Float)) ycursor = ((LV2_Atom_Float*)value)->body;
+					if ((key == urids.bangr_xcursor) && (value->type == urids.atom_Float)) 
+					{
+						xcursor = ((LV2_Atom_Float*)value)->body;
+						resttime = 0.2 * rate;
+					}
+
+					else if ((key == urids.bangr_ycursor) && (value->type == urids.atom_Float)) 
+					{
+						ycursor = ((LV2_Atom_Float*)value)->body;
+						resttime = 0.2 * rate;
+					}
 				}
 			}
 
@@ -195,7 +205,7 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 	for (uint32_t i = start; i < end; ++i)
 	{
 		// Update cursor
-		if (!listen)
+		if ((!listen) && (resttime <= 0))
 		{
 			if (count >= rate)
 			{
@@ -305,6 +315,8 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 				if (dy > 0.0f) {ang = -M_PI - ang; spin = 0.0f;}
 			}
 		}
+
+		else if (resttime > 0) --resttime;
 
 		// Calculate params for cursor position
 		float params[NR_PARAMS] = {0};
