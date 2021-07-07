@@ -39,8 +39,6 @@ struct BAngrURIs
 	LV2_URID patch_accept;
 	LV2_URID patch_property;
 	LV2_URID patch_value;
-	LV2_URID bangr_uiOn;
-	LV2_URID bangr_uiOff;
 	LV2_URID bangr_cursorOn;
 	LV2_URID bangr_cursorOff;
 	LV2_URID bangr_xcursor;
@@ -59,8 +57,6 @@ void getURIs (LV2_URID_Map* m, BAngrURIs* uris)
 	uris->patch_accept = m->map(m->handle, LV2_PATCH__accept);
 	uris->patch_property = m->map(m->handle, LV2_PATCH__property);
 	uris->patch_value = m->map(m->handle, LV2_PATCH__value);
-	uris->bangr_uiOn = m->map(m->handle, BANGR_URI "#uiOn");
-	uris->bangr_uiOff = m->map(m->handle, BANGR_URI "#uiOff");
 	uris->bangr_cursorOn = m->map(m->handle, BANGR_URI "#cursorOn");
 	uris->bangr_cursorOff = m->map(m->handle, BANGR_URI "#cursorOff");
 	uris->bangr_xcursor = m->map(m->handle, BANGR_URI "#xcursor");

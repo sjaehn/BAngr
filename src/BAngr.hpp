@@ -100,7 +100,6 @@ private:
 	// Internals
 	LV2_Atom_Forge forge;
 	LV2_Atom_Forge_Frame frame;
-	bool ui_on;
 	XRegion xregion;
 
 	void play (const uint32_t start, const uint32_t end);

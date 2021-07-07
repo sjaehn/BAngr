@@ -65,7 +65,6 @@ BAngr::BAngr (double samplerate, const LV2_Feature* const* features) :
 	audioOutput2 (nullptr),
 	newControllers {nullptr},
 	controllers {0.0f},
-	ui_on (false),
 	xregion (samplerate)
 
 {
@@ -145,21 +144,7 @@ void BAngr::run (uint32_t n_samples)
 		{
 			const LV2_Atom_Object* obj = (const LV2_Atom_Object*)&ev->body;
 
-			// UI on
-			if (obj->body.otype == urids.bangr_uiOn) 
-			{
-				ui_on = true;
-				listen = false;
-			}
-
-			// UI off
-			else if (obj->body.otype == urids.bangr_uiOff) 
-			{
-				ui_on = false;
-				listen = false;
-			}
-
-			else if (obj->body.otype == urids.bangr_cursorOn) listen = true;
+			if (obj->body.otype == urids.bangr_cursorOn) listen = true;
 			else if (obj->body.otype == urids.bangr_cursorOff) listen = false;
 
 			else if (obj->body.otype == urids.patch_Set)
@@ -199,7 +184,7 @@ void BAngr::run (uint32_t n_samples)
 	if (last_t < n_samples) play (last_t, n_samples);		
 
 	// Send collected data to GUI
-	if (ui_on && (!listen)) notifyCursor ();
+	if (!listen) notifyCursor ();
 
 	// Close off sequence
 	lv2_atom_forge_pop (&forge, &frame);

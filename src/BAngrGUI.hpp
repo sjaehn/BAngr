@@ -70,8 +70,6 @@ public:
 	BAngrGUI (const char *bundle_path, const LV2_Feature *const *features, PuglNativeView parentWindow);
 	~BAngrGUI ();
 	void portEvent (uint32_t port_index, uint32_t buffer_size, uint32_t format, const void *buffer);
-	void sendUiOn ();
-	void sendUiOff ();
 	void sendCursor ();
 	void sendXCursor ();
 	void sendYCursor ();

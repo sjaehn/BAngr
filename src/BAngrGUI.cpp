@@ -182,9 +182,7 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 }
 
 BAngrGUI::~BAngrGUI()
-{
-	sendUiOff ();
-}
+{}
 
 void BAngrGUI::portEvent(uint32_t port_index, uint32_t buffer_size, uint32_t format, const void* buffer)
 {
@@ -343,28 +341,6 @@ void BAngrGUI::onConfigureRequest (BEvents::ExposeEvent* event)
 
 	sz = (getWidth() / 1000 > getHeight() / 560 ? getHeight() / 560 : getWidth() / 1000);
 	resizeGUI ();
-}
-
-void BAngrGUI::sendUiOn ()
-{
-	uint8_t obj_buf[64];
-	lv2_atom_forge_set_buffer(&forge, obj_buf, sizeof(obj_buf));
-
-	LV2_Atom_Forge_Frame frame;
-	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_uiOn);
-	lv2_atom_forge_pop(&forge, &frame);
-	write_function(controller, CONTROL, lv2_atom_total_size(msg), urids.atom_eventTransfer, msg);
-}
-
-void BAngrGUI::sendUiOff ()
-{
-	uint8_t obj_buf[64];
-	lv2_atom_forge_set_buffer(&forge, obj_buf, sizeof(obj_buf));
-
-	LV2_Atom_Forge_Frame frame;
-	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_uiOff);
-	lv2_atom_forge_pop(&forge, &frame);
-	write_function(controller, CONTROL, lv2_atom_total_size(msg), urids.atom_eventTransfer, msg);
 }
 
 void BAngrGUI::sendCursor ()
@@ -574,7 +550,6 @@ static LV2UI_Handle instantiate (const LV2UI_Descriptor *descriptor, const char 
 	if (resize) resize->ui_resize(resize->handle, 1000 * sz, 560 * sz);
 
 	*widget = (LV2UI_Widget) puglGetNativeWindow (ui->getPuglView ());
-	ui->sendUiOn();
 	return (LV2UI_Handle) ui;
 }
 
