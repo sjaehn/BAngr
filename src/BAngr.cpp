@@ -380,6 +380,30 @@ void BAngr::notifyCursor()
 	lv2_atom_forge_pop(&forge, &frame);
 }
 
+LV2_State_Status BAngr::state_save (LV2_State_Store_Function store, LV2_State_Handle handle, uint32_t flags,
+			const LV2_Feature* const* features)
+{
+	store (handle, urids.bangr_xcursor, &xcursor, sizeof (float), urids.atom_Float, LV2_STATE_IS_POD);
+	store (handle, urids.bangr_ycursor, &ycursor, sizeof (float), urids.atom_Float, LV2_STATE_IS_POD);
+	return LV2_STATE_SUCCESS;
+}
+
+LV2_State_Status BAngr::state_restore (LV2_State_Retrieve_Function retrieve, LV2_State_Handle handle, uint32_t flags,
+			const LV2_Feature* const* features)
+{
+	size_t   size;
+	uint32_t type;
+	uint32_t valflags;
+
+	const void* xcursorData = retrieve(handle, urids.bangr_xcursor, &size, &type, &valflags);
+	if (xcursorData && (type == urids.atom_Float)) xcursor = LIMIT (*(const float*)xcursorData, 0.0f, 1.0f);
+
+	const void* ycursorData = retrieve(handle, urids.bangr_ycursor, &size, &type, &valflags);
+	if (ycursorData && (type == urids.atom_Float)) ycursor = LIMIT (*(const float*)ycursorData, 0.0f, 1.0f);
+
+	return LV2_STATE_SUCCESS;
+}
+
 static LV2_Handle instantiate (const LV2_Descriptor* descriptor, double samplerate, const char* bundle_path, const LV2_Feature* const* features)
 {
 	// New instance
@@ -419,6 +443,31 @@ static void cleanup (LV2_Handle instance)
 	if (inst) delete inst;
 }
 
+static LV2_State_Status state_save(LV2_Handle instance, LV2_State_Store_Function store, LV2_State_Handle handle, uint32_t flags,
+           const LV2_Feature* const* features)
+{
+	BAngr* inst = (BAngr*)instance;
+	if (!inst) return LV2_STATE_SUCCESS;
+
+	inst->state_save (store, handle, flags, features);
+	return LV2_STATE_SUCCESS;
+}
+
+static LV2_State_Status state_restore(LV2_Handle instance, LV2_State_Retrieve_Function retrieve, LV2_State_Handle handle, uint32_t flags,
+           const LV2_Feature* const* features)
+{
+	BAngr* inst = (BAngr*)instance;
+	if (inst) inst->state_restore (retrieve, handle, flags, features);
+	return LV2_STATE_SUCCESS;
+}
+
+static const void* extension_data(const char* uri)
+{
+	static const LV2_State_Interface  state  = {state_save, state_restore};
+	if (!strcmp(uri, LV2_STATE__interface)) return &state;
+	return NULL;
+}
+
 static const LV2_Descriptor descriptor =
 {
 		BANGR_URI,
@@ -428,7 +477,7 @@ static const LV2_Descriptor descriptor =
 		run,
 		NULL, //deactivate,
 		cleanup,
-		NULL //extension_data
+		extension_data
 };
 
 // LV2 Symbol Export

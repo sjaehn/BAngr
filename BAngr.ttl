@@ -3,11 +3,13 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
 @prefix time: <http://lv2plug.in/ns/ext/time#> .
 @prefix urid: <http://lv2plug.in/ns/ext/urid#> .
 @prefix param: <http://lv2plug.in/ns/ext/parameters#> .
 @prefix patch: <http://lv2plug.in/ns/ext/patch#> .
+@prefix state: <http://lv2plug.in/ns/ext/state#> .
 @prefix ui: <http://lv2plug.in/ns/extensions/ui#> .
 @prefix rsz: <http://lv2plug.in/ns/ext/resize-port#> .
 
@@ -50,9 +52,10 @@
         rdfs:comment "A multi-dimensional dynamicly distorted staggered multi-bandpass LV2 plugin, for extreme soundmangling. Based on Airwindows XRegion." ;
 	doap:maintainer <http://www.jahnichen.de/sjaehn#me> ;
 	doap:license <http://usefulinc.com/doap/licenses/gpl> ;
-	lv2:microVersion 1 ;
+	lv2:microVersion 2 ;
 	lv2:minorVersion 5 ;
-        lv2:optionalFeature lv2:hardRTCapable ;
+        lv2:extensionData state:interface ;
+        lv2:optionalFeature lv2:hardRTCapable , state:loadDefaultState , state:threadSafeRestore ;
         lv2:binary <BAngr.so> ;
 	lv2:requiredFeature urid:map ;
 	ui:ui <https://www.jahnichen.de/plugins/lv2/BAngr#gui> ;
@@ -375,4 +378,9 @@
                 lv2:default -0.5 ;
                 lv2:minimum -1.0 ;
                 lv2:maximum 1.0 ;
+        ] ;
+
+        state:state [
+                <https://www.jahnichen.de/plugins/lv2/BAngr#xcursor> "0.5"^^xsd:float ;
+                <https://www.jahnichen.de/plugins/lv2/BAngr#ycursor> "0.5"^^xsd:float ;
         ] .
