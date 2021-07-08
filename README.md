@@ -98,7 +98,7 @@ and edit the parameters.
 ## What's new
 
 * Faster
-* Support lv2:Parameters
+* Support lv2:Parameters, lv2:State
 * Cursor XY can now externally be controlled
 
 

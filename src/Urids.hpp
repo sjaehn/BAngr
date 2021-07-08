@@ -22,7 +22,6 @@
 #define URIDS_HPP_
 
 #include <lv2/lv2plug.in/ns/lv2core/lv2.h>
-// #include <lv2/lv2plug.in/ns/ext/atom/util.h>
 #include <lv2/lv2plug.in/ns/ext/urid/urid.h>
 #include "lv2/lv2plug.in/ns/ext/patch/patch.h"
 #include "Definitions.hpp"
@@ -34,9 +33,7 @@ struct BAngrURIs
 	LV2_URID atom_Object;
 	LV2_URID atom_Blank;
 	LV2_URID atom_eventTransfer;
-	LV2_URID patch_Get;
 	LV2_URID patch_Set;
-	LV2_URID patch_accept;
 	LV2_URID patch_property;
 	LV2_URID patch_value;
 	LV2_URID bangr_cursorOn;
@@ -52,9 +49,7 @@ void getURIs (LV2_URID_Map* m, BAngrURIs* uris)
 	uris->atom_Object = m->map(m->handle, LV2_ATOM__Object);
 	uris->atom_Blank = m->map(m->handle, LV2_ATOM__Blank);
 	uris->atom_eventTransfer = m->map(m->handle, LV2_ATOM__eventTransfer);
-	uris->patch_Get = m->map(m->handle, LV2_PATCH__Get);
 	uris->patch_Set = m->map(m->handle, LV2_PATCH__Set);
-	uris->patch_accept = m->map(m->handle, LV2_PATCH__accept);
 	uris->patch_property = m->map(m->handle, LV2_PATCH__property);
 	uris->patch_value = m->map(m->handle, LV2_PATCH__value);
 	uris->bangr_cursorOn = m->map(m->handle, BANGR_URI "#cursorOn");

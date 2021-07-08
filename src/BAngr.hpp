@@ -26,14 +26,12 @@
 #include <array>
 #include <random>
 #include <lv2/lv2plug.in/ns/lv2core/lv2.h>
-#include <lv2/lv2plug.in/ns/ext/atom/util.h>
 #include <lv2/lv2plug.in/ns/ext/urid/urid.h>
 #include <lv2/lv2plug.in/ns/ext/atom/atom.h>
 #include <lv2/lv2plug.in/ns/ext/atom/forge.h>
-#include "lv2/state/state.h"
+#include "lv2/lv2plug.in/ns/ext/state/state.h"
 
 #include "Definitions.hpp"
-#include "Stereo.hpp"
 #include "Ports.hpp"
 #include "Urids.hpp"
 #include "Airwindows/XRegion.hpp"
@@ -60,7 +58,6 @@ private:
 	float xcursor;
 	float ycursor;
 	bool listen;
-	int resttime;
 	std::minstd_rand rnd;
 	std::uniform_real_distribution<float> bidist;
 	double count;
