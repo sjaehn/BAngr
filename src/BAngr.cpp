@@ -26,7 +26,7 @@
 
 #define LIMIT(g , min, max) ((g) > (max) ? (max) : ((g) < (min) ? (min) : (g)))
 
-const float flexTime[NR_FLEX] = {1.0f, 0.05f};
+const float flexTime[NR_FLEX] = {1.0f, 0.05f, 0.05f, 0.05f, 0.05f};
 
 BAngr::BAngr (double samplerate, const LV2_Feature* const* features) :
 	map(NULL),
