@@ -17,7 +17,15 @@ a) Install the bangr package for your system
 * [Arch](https://aur.archlinux.org/packages/bangr.lv2-git) by SpotlightKid
 * [FreeBSD](https://www.freshports.org/audio/bangr-lv2) by yurivict
 
-b) Build your own binaries in the following three steps.
+Note: This will NOT necessarily install the latest version of B.Angr. The version provided depends on the packagers.
+
+b) Use the latest provided binaries
+
+Unpack the provided bangr-\*.zip or bangr-\*.tar.xz from the latest release and 
+copy the BAngr.lv2 folder to your lv2 directory (depending on your system settings,
+~/.lv2/, /usr/lib/lv2/, /usr/local/lib/lv2/, or ...).
+
+c) Build your own binaries in the following three steps.
 
 Step 1: [Download the latest published version](https://github.com/sjaehn/BAngr/releases) of B.Angr. 
 Or clone or [download the master](https://github.com/sjaehn/BAngr/archive/master.zip) of this repository.
@@ -98,8 +106,14 @@ and edit the parameters.
 ## What's new
 
 * Faster
+  * Optimized DSP code
+  * Compiler optimizations (`-O3 -ffast-math`)
 * Support lv2:Parameters, lv2:State
 * Cursor XY can now externally be controlled
+* Binary compatibility improved
+  * Static libs
+  * Strip symbols by default
+* Binary packages provided
 
 
 ## Acknowledgments

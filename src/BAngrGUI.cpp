@@ -467,7 +467,7 @@ void BAngrGUI::cursorDraggedCallback (BEvents::Event* event)
 void BAngrGUI::cursorReleasedCallback (BEvents::Event* event)
 {
 	if (!event) return;
-	BEvents::PointerEvent* pev = (BEvents::PointerEvent*)event;
+	//BEvents::PointerEvent* pev = (BEvents::PointerEvent*)event;
 	Dot* widget = (Dot*) event->getWidget ();
 	if (!widget) return;
 	BAngrGUI* ui = (BAngrGUI*) widget->getMainWindow();
