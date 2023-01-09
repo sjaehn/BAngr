@@ -37,20 +37,6 @@ GUILIBS += -lm `$(PKG_CONFIG) --libs $(GUI_LIBS)`
 LANGUAGE ?= EN
 GUIBGFILE = surface.png
 
-ifeq ($(shell test -e src/Locale_$(LANGUAGE).hpp && echo -n yes),yes)
-  override GUIPPFLAGS += -DLOCALEFILE=\"Locale_$(LANGUAGE).hpp\"
-endif
-
-ifeq ($(shell test -e src/Skin_$(SKIN).hpp && echo -n yes),yes)
-  override GUIPPFLAGS += -DSKINFILE=\"Skin_$(SKIN).hpp\"
-endif
-
-ifeq ($(shell test -e surface_$(SKIN).png && echo -n yes),yes)
-  override GUIBGFILE = inc/surface_$(SKIN).png
-else
-  override GUIBGFILE = inc/surface.png
-endif
-
 ifdef WWW_BROWSER_CMD
   override GUIPPFLAGS += -DWWW_BROWSER_CMD=\"$(WWW_BROWSER_CMD)\"
 endif
@@ -75,39 +61,21 @@ B_FILES = $(addprefix $(BUNDLE)/, $(ROOTFILES) $(INCFILES))
 DSP_INCL = src/Airwindows/XRegion.cpp
 
 GUI_CXX_INCL = \
-	src/BWidgets/PopupListBox.cpp \
-	src/BWidgets/ListBox.cpp \
-	src/BWidgets/ChoiceBox.cpp \
-	src/BWidgets/BItems.cpp \
-	src/BWidgets/ItemBox.cpp \
-	src/BWidgets/DownButton.cpp \
-	src/BWidgets/UpButton.cpp \
-	src/BWidgets/Button.cpp \
-	src/BWidgets/HSliderValue.cpp \
-	src/BWidgets/HSlider.cpp \
-	src/BWidgets/Knob.cpp \
-	src/BWidgets/HScale.cpp \
-	src/BWidgets/ToggleButton.cpp \
-	src/BWidgets/Button.cpp \
-	src/BWidgets/RangeWidget.cpp \
-	src/BWidgets/ValueWidget.cpp \
-	src/BWidgets/Label.cpp \
-	src/BWidgets/Text.cpp \
-	src/BWidgets/Window.cpp \
-	src/BWidgets/Widget.cpp \
-	src/BWidgets/BStyles.cpp \
-	src/BWidgets/BColors.cpp \
-	src/BUtilities/to_string.cpp \
-	src/BUtilities/stof.cpp \
-	src/BUtilities/vsystem.cpp
+	src/BWidgets/BUtilities/vsystem.cpp \
+	src/BWidgets/BUtilities/Urid.cpp \
+	src/BWidgets/BUtilities/Dictionary.cpp \
+	src/BWidgets/BWidgets/Supports/Closeable.cpp \
+	src/BWidgets/BWidgets/Supports/Messagable.cpp \
+	src/BWidgets/BWidgets/Window.cpp \
+	src/BWidgets/BWidgets/Widget.cpp 
 
 GUI_C_INCL = \
 	src/screen.c \
-	src/BWidgets/cairoplus.c \
-	src/BWidgets/pugl/implementation.c \
-	src/BWidgets/pugl/x11_stub.c \
-	src/BWidgets/pugl/x11_cairo.c \
-	src/BWidgets/pugl/x11.c
+	src/BWidgets/BUtilities/cairoplus.c \
+	src/BWidgets/BWidgets/pugl/implementation.c \
+	src/BWidgets/BWidgets/pugl/x11_stub.c \
+	src/BWidgets/BWidgets/pugl/x11_cairo.c \
+	src/BWidgets/BWidgets/pugl/x11.c
 
 ifeq ($(shell $(PKG_CONFIG) --exists 'lv2 >= 1.12.4' || echo no), no)
   $(error lv2 >= 1.12.4 not found. Please install lv2 >= 1.12.4 first.)
@@ -126,6 +94,7 @@ $(BUNDLE): clean $(DSP_OBJ) $(GUI_OBJ)
 
 all: $(BUNDLE)
 
+ifeq (,$(filter -g,$(CXXFLAGS)))
 $(DSP_OBJ): $(DSP_SRC)
 	@echo -n Build $(BUNDLE) DSP...
 	@mkdir -p $(BUNDLE)
@@ -143,6 +112,23 @@ $(GUI_OBJ): $(GUI_SRC)
 	@$(STRIP) $(STRIPFLAGS) $(BUNDLE)/$@
 	@rm -rf $(BUNDLE)/tmp
 	@echo \ done.
+else
+$(DSP_OBJ): $(DSP_SRC)
+	@echo -n Build \-g $(BUNDLE) DSP...
+	@mkdir -p $(BUNDLE)
+	@$(CXX) $(CPPFLAGS) $(OPTIMIZATIONS) $(CXXFLAGS) $(LDFLAGS) $(DSPCFLAGS) -Wl,--start-group $(DSPLIBS) $< $(DSP_INCL) -Wl,--end-group -o $(BUNDLE)/$@
+	@echo \ done.
+
+$(GUI_OBJ): $(GUI_SRC)
+	@echo -n Build \-g $(BUNDLE) GUI...
+	@mkdir -p $(BUNDLE)
+	@mkdir -p $(BUNDLE)/tmp
+	@cd $(BUNDLE)/tmp; $(CC) $(CPPFLAGS) $(GUIPPFLAGS) $(CFLAGS) $(GUICFLAGS) $(addprefix ../../, $(GUI_C_INCL)) -c
+	@cd $(BUNDLE)/tmp; $(CXX) $(CPPFLAGS) $(GUIPPFLAGS) $(CXXFLAGS) $(GUICFLAGS) $(addprefix ../../, $< $(GUI_CXX_INCL)) -c
+	@$(CXX) $(CPPFLAGS) $(GUIPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $(GUICFLAGS) -Wl,--start-group $(GUILIBS) $(BUNDLE)/tmp/*.o -Wl,--end-group -o $(BUNDLE)/$@
+	@rm -rf $(BUNDLE)/tmp
+	@echo \ done.
+endif
 
 install:
 	@echo -n Install $(BUNDLE) to $(DESTDIR)$(LV2DIR)...

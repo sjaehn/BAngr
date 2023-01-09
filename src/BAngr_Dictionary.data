@@ -1,0 +1,134 @@
+{
+    {
+        "Gain",
+        {
+            {"de_DE", "Verstärkung"}
+        }
+    },
+
+    {
+        "First",
+        {
+            {"de_DE", "Erster"}
+        }
+    },
+
+    {
+        "Last",
+        {
+            {"de_DE", "Letzter"}
+        }
+    },
+
+    {
+        "Nuke",
+        {
+            {"de_DE", "Nuke"}
+        }
+    },
+
+    {
+        "Mix",
+        {
+            {"de_DE", "Mix"}
+        }
+    },
+
+    {
+        "Pan",
+        {
+            {"de_DE", "Panorama"}
+        }
+    },
+
+    {
+        "Speed",
+        {
+            {"de_DE", "Geschindigkeit"}
+        }
+    },
+
+    {
+        "Spin",
+        {
+            {"de_DE", "Drehung"}
+        }
+    },
+
+    {
+        "Powered by Airwindows XRegion",
+        {
+            {"de_DE", "Powered by Airwindows XRegion"}
+        }
+    },
+
+    {
+        "Help",
+        {
+            {"de_DE", "Hilfe"}
+        }
+    },
+
+    {
+        "Preview",
+        {
+            {"de_DE", "Vorschau"}
+        }
+    },
+
+    {
+        "Bypass",
+        {
+            {"de_DE", "Bypass"}
+        }
+    },
+
+    {
+        "Dry/wet",
+        {
+            {"de_DE", "Dry/wet"}
+        }
+    },
+
+    {
+        "Flexibility",
+        {
+            {"de_DE", "Flexibilität"}
+        }
+    },
+
+    {
+        "Random",
+        {
+            {"de_DE", "Zufall"}
+        }
+    },
+
+    {
+        "Level",
+        {
+            {"de_DE", "Lautstärke"}
+        }
+    },
+
+    {
+        "Lows",
+        {
+            {"de_DE", "Tiefen"}
+        }
+    },
+
+    {
+        "Mids",
+        {
+            {"de_DE", "Mitten"}
+        }
+    },
+
+    {
+        "Highs",
+        {
+            {"de_DE", "Höhen"}
+        }
+    }
+}

@@ -93,27 +93,44 @@ Or leave everything in the random state.
 More about XRegion at http://www.airwindows.com/xregion/ .
 
 
-## Customize
+## Internationalization
+B.Angr now uses the dictionaries of the new B.Widgets toolkit and all labels
+are now automatically shown in your system language (if translation is 
+provided). The dictionary for this plugin is stored in 
+src/BAngr_Dictionary.data. If you want to add a translation to your language, 
+simply edit this file in your text editor und use the (POSIX) language code 
+(format: language_TERRITORY) of your language. 
 
-You can create customized builds of B.Angr using the parameters `LANGUAGE` and `SKIN` (once
-available). To create a new language pack, copy `src/Locale_EN.hpp` and edit
-the text for the respective definitions. But do not change or delete any definition symbol!
+E. g., if you want to add a french translation of "Help", simply change
+```
+    {
+        "Help",           
+        {
+            {"de_DE", "Hilfe"},
+            {"it_IT", "Aiuto"}
+        }
+    },
+```
+to
+```
+    {
+        "Help",           
+        {
+            {"de_DE", "Hilfe"},
+            {"fr_FR", "Aide"},
+            {"it_IT", "Aiuto"}
+        }
+    },
+```
 
-To create a new skin, duplicate `src/Skin_Default.hpp`, rename it to `src/Skin_Default.hpp`
-and edit the parameters.
+Once you changed the dictionary, you have to re-build the plugin. And please
+share your translations with other users by either submitting a git pull 
+request or notifying me (issue report, e-mail, ...).
 
 
 ## What's new
 
-* Faster
-  * Optimized DSP code
-  * Compiler optimizations (`-O3 -ffast-math`)
-* Support lv2:Parameters, lv2:State
-* Cursor XY can now externally be controlled
-* Binary compatibility improved
-  * Static libs
-  * Strip symbols by default
-* Binary packages provided
+* Use new B.Widgets toolkit
 
 
 ## Acknowledgments

@@ -1,7 +1,7 @@
 /* B.Angr
  * Dynamic distorted bandpass filter plugin
  *
- * Copyright (C) 2021 by Sven Jähnichen
+ * Copyright (C) 2021 - 2023 by Sven Jähnichen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,80 +19,65 @@
  */
 
 #include "BAngrGUI.hpp"
+#include <cmath>
 #include <exception>
+#include "BAngrDial.hpp"
+#include "BWidgets/BEvents/ExposeEvent.hpp"
+#include "BWidgets/BUtilities/Dictionary.hpp"
+#include "BWidgets/BWidgets/ComboBox.hpp"
+#include "BWidgets/BWidgets/Label.hpp"
+#include "BWidgets/BWidgets/Supports/ValueTransferable.hpp"
+#include "BWidgets/BWidgets/Supports/ValueableTyped.hpp"
+#include "Ports.hpp"
 #include "screen.h"
-#include "BUtilities/vsystem.hpp"
+#include "BWidgets/BUtilities/vsystem.hpp"
 
 
 BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features, PuglNativeView parentWindow) :
-	Window (1000, 560, "B.Angr", parentWindow, true, PUGL_MODULE, 0),
+	Window (1000, 560, parentWindow, URID(), "B.Choppr", true, PUGL_MODULE, 0),
 	controller (NULL), 
 	write_function (NULL),
-	pluginPath (bundle_path ? std::string (bundle_path) : std::string ("")),  
-	sz (1.0), 
-	bgImageSurface (nullptr),
+	pluginPath (bundle_path ? std::string (bundle_path) : std::string ("")),
 	map (nullptr),
 
-	mContainer (0, 0, 1000, 560, "main"),
-	cursor (480, 260, 40, 40, "dot"),
-	poweredLabel (720, 540, 250, 20, "rlabel", BANGR_LABEL_POWERED_BY),
-	helpButton (918, 508, 24, 24, "widget", BANGR_LABEL_HELP),
-	ytButton (948, 508, 24, 24, "widget", BANGR_LABEL_VIDEO),
-	bypassButton (900, 30, 20, 20, "dial"),
-	bypassLabel (880, 60, 60, 20, "label", BANGR_LABEL_BYPASS),
-	drywetDial (940, 20, 40, 40, "dial", 1.0, 0.0, 1.0, 0.0, ""),
-	drywetLabel (930, 60, 60, 20, "label", BANGR_LABEL_DRY_WET),
-	speedDial (370, 460, 60, 60, "dial", 0.5, 0.0, 1.0, 0.0, BIDIRECTIONAL, "%1.2f", ""),
-	speedLabel (370, 520, 60, 20, "label", BANGR_LABEL_SPEED),
-	spinDial (570, 460, 60, 60, "dial", 0.0, -1.0, 1.0, 0.0, BIDIRECTIONAL, "%1.2f", ""),
-	spinLabel (570, 520, 60, 20, "label", BANGR_LABEL_SPIN),
-	speedScreen (180, 480, 100, 35, "screen"),
-	speedFlexLabel (220, 520, 100, 20, "label", BANGR_LABEL_FLEXIBILITY),
-	speedTypeListbox 
-	(
-		280, 490, 80, 20, 0, -120, 80, 120, "menu", 
-		BItems::ItemList 
-		({
-			{RANDOM, BANGR_LABEL_RANDOM}, 
-			{LEVEL, BANGR_LABEL_LEVEL},
-			{LOWS, BANGR_LABEL_LOWS},
-			{MIDS, BANGR_LABEL_MIDS},
-			{HIGHS, BANGR_LABEL_HIGHS}
-		}), 
-		0),
-	speedAmountSlider (200, 485, 80, 20, "slider", 0.0, 0.0, 1.0, 0.0, "%1.2f"),
-	spinScreen (640, 480, 100, 35, "screen"),
-	spinFlexLabel (680, 520, 100, 20, "label", BANGR_LABEL_FLEXIBILITY),
-	spinTypeListbox 
-	(
-		740, 490, 80, 20, 0, -120, 80, 120, "menu",
-		BItems::ItemList 
-		({
-			{RANDOM, BANGR_LABEL_RANDOM}, 
-			{LEVEL, BANGR_LABEL_LEVEL},
-			{LOWS, BANGR_LABEL_LOWS},
-			{MIDS, BANGR_LABEL_MIDS},
-			{HIGHS, BANGR_LABEL_HIGHS}
-		}), 
-		0),
-	spinAmountSlider (660, 485, 80, 20, "slider", 0.0, 0.0, 1.0, 0.0, "%1.2f")
+	mContainer(0, 0, 1000, 560, pluginPath + "inc/surface.png", URID ("/bgimage")),
+	cursor (480, 260, 40, 40, URID ("/dot")),
+	poweredLabel (720, 540, 250, 20, BDICT("Powered by Airwindows XRegion"), URID ("/rlabel")),
+	helpButton (918, 508, 24, 24, false, false, URID ("/halobutton"), BDICT ("Help")),
+	ytButton (948, 508, 24, 24, false, false, URID ("/halobutton"), BDICT ("Preview")),
+	bypassButton (900, 30, 20, 20, 2, true, false, URID ("/redbutton"), BDICT ("Bypass")),
+	bypassLabel (880, 60, 60, 20, BDICT ("Bypass"), URID ("/label")),
+	drywetDial (940, 20, 40, 40, 1.0, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Dry/wet")),
+	drywetLabel (930, 60, 60, 20, BDICT ("Dry/wet"), URID ("/label")),
+	speedDial (370, 460, 60, 60, 0.5, 0.5, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Speed")),
+	speedLabel (370, 520, 60, 20, BDICT("Speed"), URID("/label")),
+	spinDial (570, 460, 60, 60, 0.0, 0.0, -1.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Spin")),
+	spinLabel (570, 520, 60, 20, BDICT("Spin"), URID("/label")),
+	speedScreen (180, 480, 100, 35, URID("/screen")),
+	speedFlexLabel (220, 520, 100, 20, BDICT("Flexibility"), URID("/label")),
+	speedTypeCombobox (280, 490, 80, 20, 0, -120, 80, 120, {BDICT("Random"), BDICT("Level"), BDICT("Lows"), BDICT("Mids"), BDICT("Highs")}, 1, URID("/menu")),
+	speedAmountSlider (200, 485, 80, 20, 0.0, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Speed")),
+	spinScreen (640, 480, 100, 35, URID("/screen")),
+	spinFlexLabel (680, 520, 100, 20, BDICT("Flexibility"), URID("/label")),
+	spinTypeCombobox (740, 490, 80, 20, 0, -120, 80, 120, {BDICT("Random"), BDICT("Level"), BDICT("Lows"), BDICT("Mids"), BDICT("Highs")}, 1, URID("/menu")),
+	spinAmountSlider (660, 485, 80, 20, 0.0, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Speed"))
 {
 	// Init param widgets
 	for (int i = 0; i < NR_FX; ++i)
 	{
-		fx[i].container = BWidgets::Widget (20 + int (i / 2) * 660, 100 + int (((i + 1) & 3) / 2) * 200, 300, 160, "widget");
-		fx[i].paramDials[0] = Dial (0, 10, 60, 60, "dial", 0.5, 0.0, 1.0, 0.0, "%1.2f");
-		fx[i].paramLabels[0] = BWidgets::Label (0, 70, 60, 20, "label", BANGR_LABEL_GAIN);
-		fx[i].paramDials[1] = Dial (80, 10, 60, 60, "dial", 0.5, 0.0, 1.0, 0.0, "%1.2f");
-		fx[i].paramLabels[1] = BWidgets::Label (80, 70, 60, 20, "label", BANGR_LABEL_FIRST);
-		fx[i].paramDials[2] = Dial (160, 10, 60, 60, "dial", 0.5, 0.0, 1.0, 0.0, "%1.2f");
-		fx[i].paramLabels[2] = BWidgets::Label (160, 70, 60, 20, "label", BANGR_LABEL_LAST);
-		fx[i].paramDials[3] = Dial (240, 10, 60, 60, "dial", 0.0, 0.0, 1.0, 0.0, "%1.2f");
-		fx[i].paramLabels[3] = BWidgets::Label (240, 70, 60, 20, "label", BANGR_LABEL_NUKE);
-		fx[i].paramDials[4] = Dial (40, 70, 60, 60, "dial", 1.0, 0.0, 1.0, 0.0, "%1.2f");
-		fx[i].paramLabels[4] = BWidgets::Label (40, 130, 60, 20, "label", BANGR_LABEL_MIX);
-		fx[i].paramDials[5] = Dial (200, 70, 60, 60, "dial", 0.0, -1.0, 1.0, 0.0, "%1.2f");
-		fx[i].paramLabels[5] = BWidgets::Label (200, 130, 60, 20, "label", BANGR_LABEL_PAN);
+		fx[i].container = new BWidgets::Widget (20 + int (i / 2) * 660, 100 + int (((i + 1) & 3) / 2) * 200, 300, 160, URID ("/widget"));
+		fx[i].paramDials[0] = new BAngrDial (0, 10, 60, 60, 0.5, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Gain"));
+		fx[i].paramLabels[0] = new BWidgets::Label (0, 70, 60, 20, BDICT("Gain"), URID("/label"));
+		fx[i].paramDials[1] = new BAngrDial (80, 10, 60, 60, 0.5, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("First"));
+		fx[i].paramLabels[1] = new BWidgets::Label (80, 70, 60, 20, BDICT("First"), URID("/label"));
+		fx[i].paramDials[2] = new BAngrDial (160, 10, 60, 60, 0.5, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Last"));
+		fx[i].paramLabels[2] = new BWidgets::Label (160, 70, 60, 20, BDICT("Last"), URID("/label"));
+		fx[i].paramDials[3] = new BAngrDial (240, 10, 60, 60, 0.0, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Nuke"));
+		fx[i].paramLabels[3] = new BWidgets::Label (240, 70, 60, 20, BDICT("Nuke"), URID("/label"));
+		fx[i].paramDials[4] = new BAngrDial (40, 70, 60, 60, 1.0, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Mix"));
+		fx[i].paramLabels[4] = new BWidgets::Label (40, 130, 60, 20, BDICT("Mix"), URID("/label"));
+		fx[i].paramDials[5] = new BAngrDial (200, 70, 60, 60, 0.0, -1.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Pan"));
+		fx[i].paramLabels[5] = new BWidgets::Label (200, 130, 60, 20, BDICT("Pan"), URID("/label"));
 	}
 
 	// Link controllers
@@ -100,67 +85,82 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 	controllerWidgets[DRY_WET] = &drywetDial;
 	controllerWidgets[SPEED] = &speedDial;
 	controllerWidgets[SPEED_RANGE] = &speedDial.range;
-	controllerWidgets[SPEED_TYPE] = &speedTypeListbox;
+	controllerWidgets[SPEED_TYPE] = &speedTypeCombobox;
 	controllerWidgets[SPEED_AMOUNT] = &speedAmountSlider;
 	controllerWidgets[SPIN] = &spinDial;
 	controllerWidgets[SPIN_RANGE] = &spinDial.range;
-	controllerWidgets[SPIN_TYPE] = &spinTypeListbox;
+	controllerWidgets[SPIN_TYPE] = &spinTypeCombobox;
 	controllerWidgets[SPIN_AMOUNT] = &spinAmountSlider;
 
 	for (int i = 0; i < NR_FX; ++i)
 	{
 		for (int j = 0; j < NR_PARAMS; ++j)
 		{
-			controllerWidgets[FX + i * NR_PARAMS + j] = &fx[i].paramDials[j];
+			controllerWidgets[FX + i * NR_PARAMS + j] = fx[i].paramDials[j];
 		}
 	}
 
 	// Configure widgets
 	cursor.setDraggable (true);
+	drywetDial.setClickable(false);
+	drywetDial.setScrollable(true);
+	drywetDial.label.hide();
+	speedDial.setClickable(false);
+	speedDial.setScrollable(true);
+	spinDial.setClickable(false);
+	spinDial.setScrollable(true);
+	speedAmountSlider.setClickable(false);
+	speedAmountSlider.setScrollable(true);
+	spinAmountSlider.setClickable(false);
+	spinAmountSlider.setScrollable(true);
+	for (Fx& f : fx)
+	{
+		for (BAngrDial* b : f.paramDials)
+		{
+			b->setClickable(false);
+			b->setScrollable(true);
+		}
+	}
+	setTheme(theme);
 
 
 	// Set callbacks
-	for (BWidgets::ValueWidget* c : controllerWidgets) c->setCallbackFunction (BEvents::EventType::VALUE_CHANGED_EVENT, BAngrGUI::valueChangedCallback);
-	cursor.setCallbackFunction (BEvents::EventType::POINTER_DRAG_EVENT, BAngrGUI::cursorDraggedCallback);
-	cursor.setCallbackFunction (BEvents::EventType::BUTTON_PRESS_EVENT, BAngrGUI::cursorDraggedCallback);
-	cursor.setCallbackFunction (BEvents::EventType::BUTTON_RELEASE_EVENT, BAngrGUI::cursorReleasedCallback);
-	poweredLabel.setCallbackFunction (BEvents::EventType::BUTTON_PRESS_EVENT, BAngrGUI::xregionClickedCallback);
-	helpButton.setCallbackFunction (BEvents::EventType::BUTTON_PRESS_EVENT, BAngrGUI::helpButtonClickedCallback);
-	ytButton.setCallbackFunction (BEvents::EventType::BUTTON_PRESS_EVENT, BAngrGUI::ytButtonClickedCallback);
-
-	// Load background & apply theme
-	bgImageSurface = cairo_image_surface_create_from_png ((pluginPath + BG_FILE).c_str());
-	widgetBg.loadFillFromCairoSurface (bgImageSurface);
-	applyTheme (theme);
+	for (BWidgets::Widget* c : controllerWidgets) c->setCallbackFunction (BEvents::Event::VALUE_CHANGED_EVENT, BAngrGUI::valueChangedCallback);
+	cursor.setCallbackFunction (BEvents::Event::POINTER_DRAG_EVENT, BAngrGUI::cursorDraggedCallback);
+	cursor.setCallbackFunction (BEvents::Event::BUTTON_PRESS_EVENT, BAngrGUI::cursorDraggedCallback);
+	cursor.setCallbackFunction (BEvents::Event::BUTTON_RELEASE_EVENT, BAngrGUI::cursorReleasedCallback);
+	poweredLabel.setCallbackFunction (BEvents::Event::BUTTON_PRESS_EVENT, BAngrGUI::xregionClickedCallback);
+	helpButton.setCallbackFunction (BEvents::Event::BUTTON_PRESS_EVENT, BAngrGUI::helpButtonClickedCallback);
+	ytButton.setCallbackFunction (BEvents::Event::BUTTON_PRESS_EVENT, BAngrGUI::ytButtonClickedCallback);
 
 	// Pack widgets
 	for (Fx& f : fx)
 	{
-		for (Dial& d : f.paramDials) f.container.add (d);
-		for (BWidgets::Label& l : f.paramLabels) f.container.add (l);
+		for (BAngrDial* d : f.paramDials) f.container->add (d);
+		for (BWidgets::Label* l : f.paramLabels) f.container->add (l);
 		mContainer.add (f.container);
 	}
-	mContainer.add (bypassButton);
-	mContainer.add (bypassLabel);
-	mContainer.add (drywetDial);
-	mContainer.add (drywetLabel);
-	mContainer.add (speedDial);
-	mContainer.add (speedLabel);
-	mContainer.add (spinDial);
-	mContainer.add (spinLabel);
-	mContainer.add (speedFlexLabel);
-	mContainer.add (speedTypeListbox);
-	mContainer.add (speedAmountSlider);
-	mContainer.add (spinFlexLabel);
-	mContainer.add (spinTypeListbox);
-	mContainer.add (spinAmountSlider);
-	mContainer.add (speedScreen);
-	mContainer.add (spinScreen);
-	mContainer.add (cursor);
-	mContainer.add (poweredLabel);
-	mContainer.add (helpButton);
-	mContainer.add (ytButton);
-	add (mContainer);
+	mContainer.add (&bypassButton);
+	mContainer.add (&bypassLabel);
+	mContainer.add (&drywetDial);
+	mContainer.add (&drywetLabel);
+	mContainer.add (&speedDial);
+	mContainer.add (&speedLabel);
+	mContainer.add (&spinDial);
+	mContainer.add (&spinLabel);
+	mContainer.add (&speedFlexLabel);
+	mContainer.add (&speedTypeCombobox);
+	mContainer.add (&speedAmountSlider);
+	mContainer.add (&spinFlexLabel);
+	mContainer.add (&spinTypeCombobox);
+	mContainer.add (&spinAmountSlider);
+	mContainer.add (&speedScreen);
+	mContainer.add (&spinScreen);
+	mContainer.add (&cursor);
+	mContainer.add (&poweredLabel);
+	mContainer.add (&helpButton);
+	mContainer.add (&ytButton);
+	add (&mContainer);
 
 	//Scan host features for URID map
 	LV2_URID_Map* m = NULL;
@@ -182,7 +182,14 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 }
 
 BAngrGUI::~BAngrGUI()
-{}
+{
+	for (const Fx& fxi : fx)
+	{
+		delete fxi.container;
+		for (const BAngrDial* d : fxi.paramDials) delete d;
+		for (const BWidgets::Label* l : fxi.paramLabels) delete l;
+	}
+}
 
 void BAngrGUI::portEvent(uint32_t port_index, uint32_t buffer_size, uint32_t format, const void* buffer)
 {
@@ -213,13 +220,13 @@ void BAngrGUI::portEvent(uint32_t port_index, uint32_t buffer_size, uint32_t for
 					if ((key == urids.bangr_xcursor) && (value->type == urids.atom_Float)) 
 					{
 						const float xcursor = ((LV2_Atom_Float*)value)->body;
-						cursor.moveTo ((400.0 + xcursor * 200.0) * sz - 0.5 * cursor.getWidth(), cursor.getPosition().y);
+						cursor.moveTo ((400.0 + xcursor * 200.0) - 0.5 * cursor.getWidth(), cursor.getPosition().y);
 					}
 
 					else if ((key == urids.bangr_ycursor) && (value->type == urids.atom_Float)) 
 					{
 						const float ycursor = ((LV2_Atom_Float*)value)->body;
-						cursor.moveTo (cursor.getPosition().x, (180.0 + ycursor * 200.0) * sz - 0.5 * cursor.getHeight());
+						cursor.moveTo (cursor.getPosition().x, (180.0 + ycursor * 200.0) - 0.5 * cursor.getHeight());
 					}
 				}
 			}
@@ -230,117 +237,31 @@ void BAngrGUI::portEvent(uint32_t port_index, uint32_t buffer_size, uint32_t for
 	else if ((format == 0) && (port_index >= CONTROLLERS) && (port_index < CONTROLLERS + NR_CONTROLLERS))
 	{
 		float* pval = (float*) buffer;
-		controllerWidgets[port_index - CONTROLLERS]->setValue (*pval);
+
+		// Offst Comboboxes by 1
+		if ((port_index - CONTROLLERS == SPEED_TYPE) || (port_index - CONTROLLERS == SPIN_TYPE))
+		{
+			BWidgets::ComboBox* combobox = dynamic_cast<BWidgets::ComboBox*>(controllerWidgets[port_index - CONTROLLERS]);
+			if (combobox) combobox->setValue(*pval + 1);
+		}
+
+		// All other control ports
+		else
+		{
+			BWidgets::ValueableTyped<double>* valueable = dynamic_cast<BWidgets::ValueableTyped<double>*>(controllerWidgets[port_index - CONTROLLERS]);
+			if (valueable) valueable->setValue (*pval);
+		}
 	}
 }
 
-void BAngrGUI::resizeGUI()
-{
-	hide ();
-
-	// Resize Fonts
-	defaultFont.setFontSize (12 * sz);
-	rFont.setFontSize (12 * sz);
-	lFont.setFontSize (12 * sz);
-
-	// Resize Background
-	cairo_surface_t* surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 1000 * sz, 560 * sz);
-	cairo_t* cr = cairo_create (surface);
-	cairo_scale (cr, sz, sz);
-	cairo_set_source_surface(cr, bgImageSurface, 0, 0);
-	cairo_paint(cr);
-	widgetBg.loadFillFromCairoSurface(surface);
-	cairo_destroy (cr);
-	cairo_surface_destroy (surface);
-
-	// Resize widgets
-	RESIZE (mContainer, 0, 0, 1000, 560, sz);
-	cursor.resize (40.0 * sz, 40.0 * sz);
-	RESIZE (poweredLabel, 720, 540, 250, 20, sz);
-	RESIZE (helpButton, 918, 508, 24, 24, sz);
-	RESIZE (ytButton, 948, 508, 24, 24, sz);
-	RESIZE (bypassButton, 900, 30, 20, 20, sz);
-	RESIZE (bypassLabel, 880, 60, 60, 20, sz);
-	RESIZE (drywetDial, 940, 20, 40, 40, sz);
-	RESIZE (drywetLabel, 930, 60, 60, 20, sz);
-	RESIZE (speedDial, 370, 460, 60, 60, sz);
-	RESIZE (speedLabel, 370, 520, 60, 20, sz);
-	RESIZE (spinDial, 570, 460, 60, 60, sz);
-	RESIZE (spinLabel, 570, 520, 60, 20, sz);
-	RESIZE (speedScreen, 180, 480, 100, 35, sz);
-	RESIZE (speedFlexLabel, 220, 520, 100, 20, sz);
-	RESIZE (speedTypeListbox, 280, 490, 80, 20, sz);
-	speedTypeListbox.resizeListBox(BUtilities::Point (80 * sz, 120 * sz));
-	speedTypeListbox.moveListBox(BUtilities::Point (0, -120 * sz));
-	speedTypeListbox.resizeListBoxItems(BUtilities::Point (80 * sz, 20 * sz));
-	RESIZE (speedAmountSlider, 200, 485, 80, 20, sz);
-	RESIZE (spinScreen , 640, 480, 100, 35, sz);
-	RESIZE (spinFlexLabel, 680, 520, 100, 20, sz);
-	RESIZE (spinTypeListbox, 740, 490, 80, 20, sz); 
-	spinTypeListbox.resizeListBox(BUtilities::Point (80 * sz, 120 * sz));
-	spinTypeListbox.moveListBox(BUtilities::Point (0, -120 * sz));
-	spinTypeListbox.resizeListBoxItems(BUtilities::Point (80 * sz, 20 * sz));
-	RESIZE (spinAmountSlider, 660, 485, 80, 20, sz);
-
-	for (int i = 0; i < NR_FX; ++i)
-	{
-		RESIZE (fx[i].container, 20 + int (i / 2) * 660, 100 + int (((i + 1) & 3) / 2) * 200, 300, 160, sz);
-		RESIZE (fx[i].paramDials[0], 0, 10, 60, 60, sz);
-		RESIZE (fx[i].paramLabels[0], 0, 70, 60, 20, sz);
-		RESIZE (fx[i].paramDials[1], 80, 10, 60, 60, sz);
-		RESIZE (fx[i].paramLabels[1], 80, 70, 60, 20, sz);
-		RESIZE (fx[i].paramDials[2], 160, 10, 60, 60, sz);
-		RESIZE (fx[i].paramLabels[2], 160, 70, 60, 20, sz);
-		RESIZE (fx[i].paramDials[3], 240, 10, 60, 60, sz);
-		RESIZE (fx[i].paramLabels[3], 240, 70, 60, 20, sz);
-		RESIZE (fx[i].paramDials[4], 40, 70, 60, 60, sz);
-		RESIZE (fx[i].paramLabels[4], 40, 130, 60, 20, sz);
-		RESIZE (fx[i].paramDials[5], 200, 70, 60, 60, sz);
-		RESIZE (fx[i].paramLabels[5], 200, 130, 60, 20, sz);
-	}
-
-	// Apply changes
-	applyTheme (theme);
-	show ();
-}
-
-void BAngrGUI::applyTheme (BStyles::Theme& theme)
-{
-	mContainer.applyTheme (theme);
-	cursor.applyTheme (theme);
-	poweredLabel.applyTheme (theme);
-	helpButton.applyTheme (theme);
-	ytButton.applyTheme (theme);
-	bypassButton.applyTheme (theme);
-	bypassLabel.applyTheme (theme);
-	drywetDial.applyTheme (theme);
-	drywetLabel.applyTheme (theme);
-	speedDial.applyTheme (theme);
-	speedLabel.applyTheme (theme);
-	spinDial.applyTheme (theme);
-	spinLabel.applyTheme (theme);
-	speedScreen.applyTheme (theme);
-	speedFlexLabel.applyTheme (theme);
-	speedTypeListbox.applyTheme (theme);
-	speedAmountSlider.applyTheme (theme);
-	spinScreen.applyTheme (theme);
-	spinFlexLabel.applyTheme (theme);
-	spinTypeListbox.applyTheme (theme);
-	spinAmountSlider.applyTheme (theme);
-
-	for (Fx& f : fx)
-	{
-		for (Dial& d : f.paramDials) d.applyTheme (theme);
-		for (BWidgets::Label& l : f.paramLabels) l.applyTheme (theme);
-	}
-}
-
-void BAngrGUI::onConfigureRequest (BEvents::ExposeEvent* event)
+void BAngrGUI::onConfigureRequest (BEvents::Event* event)
 {
 	Window::onConfigureRequest (event);
 
-	sz = (getWidth() / 1000 > getHeight() / 560 ? getHeight() / 560 : getWidth() / 1000);
-	resizeGUI ();
+	BEvents::ExposeEvent* ee = dynamic_cast<BEvents::ExposeEvent*>(event);
+	if (!ee) return;
+	const double sz = (ee->getArea().getWidth() / 1000.0 > ee->getArea().getHeight() / 560.0 ? ee->getArea().getHeight() / 560.0 : ee->getArea().getWidth() / 1000.0);
+	setZoom (sz);
 }
 
 void BAngrGUI::sendCursor ()
@@ -360,7 +281,7 @@ void BAngrGUI::sendXCursor ()
 	lv2_atom_forge_key(&forge, urids.patch_property);
 	lv2_atom_forge_urid(&forge, urids.bangr_xcursor);
 	lv2_atom_forge_key(&forge, urids.patch_value);
-	lv2_atom_forge_float(&forge, ((cursor.getPosition().x + 0.5 * cursor.getWidth()) / sz - 400.0) / 200.0);
+	lv2_atom_forge_float(&forge, ((cursor.getPosition().x + 0.5 * cursor.getWidth()) - 400.0) / 200.0);
 	lv2_atom_forge_pop(&forge, &frame);
 	write_function(controller, CONTROL, lv2_atom_total_size(msg), urids.atom_eventTransfer, msg);
 }
@@ -375,7 +296,7 @@ void BAngrGUI::sendYCursor ()
 	lv2_atom_forge_key(&forge, urids.patch_property);
 	lv2_atom_forge_urid(&forge, urids.bangr_ycursor);
 	lv2_atom_forge_key(&forge, urids.patch_value);
-	lv2_atom_forge_float(&forge, ((cursor.getPosition().y + 0.5 * cursor.getHeight()) / sz - 180.0) / 200.0);
+	lv2_atom_forge_float(&forge, ((cursor.getPosition().y + 0.5 * cursor.getHeight()) - 180.0) / 200.0);
 	lv2_atom_forge_pop(&forge, &frame);
 	write_function(controller, CONTROL, lv2_atom_total_size(msg), urids.atom_eventTransfer, msg);
 }
@@ -405,13 +326,15 @@ void BAngrGUI::sendCursorOff ()
 void BAngrGUI::valueChangedCallback (BEvents::Event* event)
 {
 	if (!event) return;
-	BWidgets::ValueWidget* widget = (BWidgets::ValueWidget*) event->getWidget ();
+
+	BWidgets::Widget* widget = event->getWidget ();
 	if (!widget) return;
-	float value = widget->getValue();
+
 	BAngrGUI* ui = (BAngrGUI*) widget->getMainWindow();
 	if (!ui) return;
 
 	int controllerNr = -1;
+	float value = nanf("");
 
 	// Identify controller
 	for (int i = 0; i < NR_CONTROLLERS; ++i)
@@ -428,37 +351,43 @@ void BAngrGUI::valueChangedCallback (BEvents::Event* event)
 	{
 		if (controllerNr == SPEED_TYPE)
 		{
+			value = ui->speedTypeCombobox.getValue() - 1.0f;
 			if (value == RANDOM) ui->speedScreen.show();
 			else ui->speedScreen.hide();
 		}
 
-		if (controllerNr == SPIN_TYPE)
+		else if (controllerNr == SPIN_TYPE)
 		{
+			value = ui->speedTypeCombobox.getValue() - 1.0f;
 			if (value == RANDOM) ui->spinScreen.show();
 			else ui->spinScreen.hide();
 		}
 
-		ui->write_function(ui->controller, CONTROLLERS + controllerNr, sizeof(float), 0, &value);
+		else
+		{
+			// Range widgets: Update parent dials as callbacks are overwritten
+			if (controllerNr == SPEED_RANGE) ui->speedDial.update();
+			if (controllerNr == SPIN_RANGE) ui->spinDial.update();
+
+			BWidgets::ValueableTyped<double>* valueable = dynamic_cast<BWidgets::ValueableTyped<double>*>(widget);
+			if (valueable) value = valueable->getValue();
+		}
+
+		if (!isnanf(value)) ui->write_function(ui->controller, CONTROLLERS + controllerNr, sizeof(float), 0, &value);
 	}
 }
 
 void BAngrGUI::cursorDraggedCallback (BEvents::Event* event)
 {
 	if (!event) return;
-	BEvents::PointerEvent* pev = (BEvents::PointerEvent*)event;
-	Dot* widget = (Dot*) event->getWidget ();
+	Dot* widget = dynamic_cast<Dot*>(event->getWidget ());
 	if (!widget) return;
 	BAngrGUI* ui = (BAngrGUI*) widget->getMainWindow();
 	if (!ui) return;
 	if (widget != &ui->cursor) return;
 
-	double x = ui->cursor.getPosition().x + 0.5 * ui->cursor.getWidth() + pev->getDelta().x;
-	double y = ui->cursor.getPosition().y + 0.5 * ui->cursor.getHeight() + pev->getDelta().y;
-
-	if (x < 400 * ui->sz) x = 400 * ui->sz;
-	if (x > 600 * ui->sz) x = 600 * ui->sz;
-	if (y < 180 * ui->sz) y = 180 * ui->sz;
-	if (y > 380 * ui->sz) y = 380 * ui->sz;
+	double x = std::min (std::max (ui->cursor.getPosition().x + 0.5 * ui->cursor.getWidth(), 400.0), 600.0);
+	double y = std::min (std::max (ui->cursor.getPosition().y + 0.5 * ui->cursor.getHeight(), 180.0), 380.0);
 
 	ui->cursor.moveTo (x - 0.5 * ui->cursor.getWidth(), y - 0.5 * ui->cursor.getHeight());
 	ui->sendCursor();
@@ -578,7 +507,7 @@ static int callResize (LV2UI_Handle ui, int width, int height)
 	BAngrGUI* self = (BAngrGUI*) ui;
 	if (!self) return 0;
 
-	BEvents::ExposeEvent* ev = new BEvents::ExposeEvent (self, self, BEvents::CONFIGURE_REQUEST_EVENT, self->getPosition().x, self->getPosition().y, width, height);
+	BEvents::ExposeEvent* ev = new BEvents::ExposeEvent (self, self, BEvents::Event::CONFIGURE_REQUEST_EVENT, self->getPosition().x, self->getPosition().y, width, height);
 	self->addEventToQueue (ev);
 	return 0;
 }
