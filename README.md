@@ -87,7 +87,7 @@ the respective instance.
 The flexible amount of speed and spin can be increased or decreased by dragging or scrolling
 the white arrows on the outside the repective dial. The behaviour of the flexible amount can
 be controlled by the audio input signal. Set the type (level, lows, mids, highs) and the amount 
-of control (from 0 = random to 1 = full control). And let the white pont move to the music. 
+of control (from 0 = random to 1 = full control). And let the white point move to the music. 
 Or leave everything in the random state.
 
 More about XRegion at http://www.airwindows.com/xregion/ .
