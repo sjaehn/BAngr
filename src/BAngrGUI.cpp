@@ -164,14 +164,12 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 
 	//Scan host features for URID map
 	LV2_URID_Map* m = NULL;
-	// unmap = NULL;
 
 	for (int i = 0; features[i]; ++i)
 	{
-		if (strcmp(features[i]->URI, LV2_URID__map) == 0) m = (LV2_URID_Map*) features[i]->data;
-		// if (strcmp(features[i]->URI, LV2_URID__unmap) == 0) unmap = (LV2_URID_Unmap*) features[i]->data;
+		if (strcmp(features[i]->URI, LV2_URID__map) == 0) m = static_cast<LV2_URID_Map*> (features[i]->data);
 	}
-	if ((!m) /*|| (!unmap)*/ ) throw std::invalid_argument ("Host does not support urid:map");
+	if (!m) throw std::invalid_argument ("Host does not support urid:map");
 
 	//Map URIS
 	map = m;
@@ -196,10 +194,10 @@ void BAngrGUI::portEvent(uint32_t port_index, uint32_t buffer_size, uint32_t for
 	// Notify port
 	if ((format == urids.atom_eventTransfer) && (port_index == NOTIFY))
 	{
-		const LV2_Atom* atom = (const LV2_Atom*) buffer;
+		const LV2_Atom* atom = static_cast<const LV2_Atom*> (buffer);
 		if (lv2_atom_forge_is_object_type(&forge, atom->type))
 		{
-			const LV2_Atom_Object* obj = (const LV2_Atom_Object*) atom;
+			const LV2_Atom_Object* obj = reinterpret_cast<const LV2_Atom_Object*> (atom);
 			
 			if (obj->body.otype == urids.patch_Set)
 			{
@@ -215,17 +213,17 @@ void BAngrGUI::portEvent(uint32_t port_index, uint32_t buffer_size, uint32_t for
 
 				if (property && (property->type == urids.atom_URID) && value)
 				{
-					const uint32_t key = ((const LV2_Atom_URID*)property)->body;
+					const uint32_t key = reinterpret_cast<const LV2_Atom_URID*>(property)->body;
 					
 					if ((key == urids.bangr_xcursor) && (value->type == urids.atom_Float)) 
 					{
-						const float xcursor = ((LV2_Atom_Float*)value)->body;
+						const float xcursor = reinterpret_cast<const LV2_Atom_Float*>(value)->body;
 						cursor.moveTo ((400.0 + xcursor * 200.0) - 0.5 * cursor.getWidth(), cursor.getPosition().y);
 					}
 
 					else if ((key == urids.bangr_ycursor) && (value->type == urids.atom_Float)) 
 					{
-						const float ycursor = ((LV2_Atom_Float*)value)->body;
+						const float ycursor = reinterpret_cast<const LV2_Atom_Float*>(value)->body;
 						cursor.moveTo (cursor.getPosition().x, (180.0 + ycursor * 200.0) - 0.5 * cursor.getHeight());
 					}
 				}
@@ -236,7 +234,7 @@ void BAngrGUI::portEvent(uint32_t port_index, uint32_t buffer_size, uint32_t for
 	// Scan controller ports
 	else if ((format == 0) && (port_index >= CONTROLLERS) && (port_index < CONTROLLERS + NR_CONTROLLERS))
 	{
-		float* pval = (float*) buffer;
+		const float* pval = static_cast<const float*> (buffer);
 
 		// Offst Comboboxes by 1
 		if ((port_index - CONTROLLERS == SPEED_TYPE) || (port_index - CONTROLLERS == SPIN_TYPE))
@@ -277,7 +275,7 @@ void BAngrGUI::sendXCursor ()
 	lv2_atom_forge_set_buffer(&forge, obj_buf, sizeof(obj_buf));
 
 	LV2_Atom_Forge_Frame frame;
-	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.patch_Set);
+	LV2_Atom* msg = reinterpret_cast<LV2_Atom*>(lv2_atom_forge_object(&forge, &frame, 0, urids.patch_Set));
 	lv2_atom_forge_key(&forge, urids.patch_property);
 	lv2_atom_forge_urid(&forge, urids.bangr_xcursor);
 	lv2_atom_forge_key(&forge, urids.patch_value);
@@ -292,7 +290,7 @@ void BAngrGUI::sendYCursor ()
 	lv2_atom_forge_set_buffer(&forge, obj_buf, sizeof(obj_buf));
 
 	LV2_Atom_Forge_Frame frame;
-	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.patch_Set);
+	LV2_Atom* msg = reinterpret_cast<LV2_Atom*>(lv2_atom_forge_object(&forge, &frame, 0, urids.patch_Set));
 	lv2_atom_forge_key(&forge, urids.patch_property);
 	lv2_atom_forge_urid(&forge, urids.bangr_ycursor);
 	lv2_atom_forge_key(&forge, urids.patch_value);
@@ -307,7 +305,7 @@ void BAngrGUI::sendCursorOn ()
 	lv2_atom_forge_set_buffer(&forge, obj_buf, sizeof(obj_buf));
 
 	LV2_Atom_Forge_Frame frame;
-	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_cursorOn);
+	LV2_Atom* msg = reinterpret_cast<LV2_Atom*>(lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_cursorOn));
 	lv2_atom_forge_pop(&forge, &frame);
 	write_function(controller, CONTROL, lv2_atom_total_size(msg), urids.atom_eventTransfer, msg);
 }
@@ -318,7 +316,7 @@ void BAngrGUI::sendCursorOff ()
 	lv2_atom_forge_set_buffer(&forge, obj_buf, sizeof(obj_buf));
 
 	LV2_Atom_Forge_Frame frame;
-	LV2_Atom* msg = (LV2_Atom*)lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_cursorOff);
+	LV2_Atom* msg = reinterpret_cast<LV2_Atom*>(lv2_atom_forge_object(&forge, &frame, 0, urids.bangr_cursorOff));
 	lv2_atom_forge_pop(&forge, &frame);
 	write_function(controller, CONTROL, lv2_atom_total_size(msg), urids.atom_eventTransfer, msg);
 }
@@ -330,7 +328,7 @@ void BAngrGUI::valueChangedCallback (BEvents::Event* event)
 	BWidgets::Widget* widget = event->getWidget ();
 	if (!widget) return;
 
-	BAngrGUI* ui = (BAngrGUI*) widget->getMainWindow();
+	BAngrGUI* ui = dynamic_cast<BAngrGUI*> (widget->getMainWindow());
 	if (!ui) return;
 
 	int controllerNr = -1;
@@ -382,7 +380,7 @@ void BAngrGUI::cursorDraggedCallback (BEvents::Event* event)
 	if (!event) return;
 	Dot* widget = dynamic_cast<Dot*>(event->getWidget ());
 	if (!widget) return;
-	BAngrGUI* ui = (BAngrGUI*) widget->getMainWindow();
+	BAngrGUI* ui = dynamic_cast<BAngrGUI*> (widget->getMainWindow());
 	if (!ui) return;
 	if (widget != &ui->cursor) return;
 
@@ -396,10 +394,9 @@ void BAngrGUI::cursorDraggedCallback (BEvents::Event* event)
 void BAngrGUI::cursorReleasedCallback (BEvents::Event* event)
 {
 	if (!event) return;
-	//BEvents::PointerEvent* pev = (BEvents::PointerEvent*)event;
-	Dot* widget = (Dot*) event->getWidget ();
+	Dot* widget = dynamic_cast<Dot*> (event->getWidget ());
 	if (!widget) return;
-	BAngrGUI* ui = (BAngrGUI*) widget->getMainWindow();
+	BAngrGUI* ui = dynamic_cast<BAngrGUI*> (widget->getMainWindow());
 	if (!ui) return;
 	if (widget != &ui->cursor) return;
 
@@ -448,8 +445,8 @@ static LV2UI_Handle instantiate (const LV2UI_Descriptor *descriptor, const char 
 
 	for (int i = 0; features[i]; ++i)
 	{
-		if (!strcmp(features[i]->URI, LV2_UI__parent)) parentWindow = (PuglNativeView) features[i]->data;
-		else if (!strcmp(features[i]->URI, LV2_UI__resize)) resize = (LV2UI_Resize*)features[i]->data;
+		if (!strcmp(features[i]->URI, LV2_UI__parent)) parentWindow = reinterpret_cast<PuglNativeView> (features[i]->data);
+		else if (!strcmp(features[i]->URI, LV2_UI__resize)) resize = static_cast<LV2UI_Resize*>(features[i]->data);
 	}
 	if (parentWindow == 0) std::cerr << "BAngr.lv2#GUI: No parent window.\n";
 
@@ -484,27 +481,27 @@ static LV2UI_Handle instantiate (const LV2UI_Descriptor *descriptor, const char 
 
 static void cleanup(LV2UI_Handle ui)
 {
-	BAngrGUI* pluginGui = (BAngrGUI*) ui;
+	BAngrGUI* pluginGui = static_cast<BAngrGUI*> (ui);
 	if (pluginGui) delete pluginGui;
 }
 
 static void portEvent(LV2UI_Handle ui, uint32_t port_index, uint32_t buffer_size,
 	uint32_t format, const void* buffer)
 {
-	BAngrGUI* pluginGui = (BAngrGUI*) ui;
+	BAngrGUI* pluginGui = static_cast<BAngrGUI*> (ui);
 	if (pluginGui) pluginGui->portEvent(port_index, buffer_size, format, buffer);
 }
 
 static int callIdle (LV2UI_Handle ui)
 {
-	BAngrGUI* pluginGui = (BAngrGUI*) ui;
+	BAngrGUI* pluginGui = static_cast<BAngrGUI*> (ui);
 	if (pluginGui) pluginGui->handleEvents ();
 	return 0;
 }
 
 static int callResize (LV2UI_Handle ui, int width, int height)
 {
-	BAngrGUI* self = (BAngrGUI*) ui;
+	BAngrGUI* self = static_cast<BAngrGUI*> (ui);
 	if (!self) return 0;
 
 	BEvents::ExposeEvent* ev = new BEvents::ExposeEvent (self, self, BEvents::Event::CONFIGURE_REQUEST_EVENT, self->getPosition().x, self->getPosition().y, width, height);
