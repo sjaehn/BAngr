@@ -30,12 +30,9 @@ override LDFLAGS += -shared -pthread
 
 override GUIPPFLAGS += -DPUGL_HAVE_CAIRO
 DSPCFLAGS += `$(PKG_CONFIG) --cflags $(LV2_LIBS)`
-GUICFLAGS += `$(PKG_CONFIG) --cflags $(GUI_LIBS)`
+GUICFLAGS += `$(PKG_CONFIG) --cflags $(GUI_LIBS)` -DPUGL_API="__attribute__((visibility(\"hidden\")))"
 DSPLIBS += -lm `$(PKG_CONFIG) --libs $(LV2_LIBS)`
 GUILIBS += -lm `$(PKG_CONFIG) --libs $(GUI_LIBS)`
-
-LANGUAGE ?= EN
-GUIBGFILE = surface.png
 
 ifdef WWW_BROWSER_CMD
   override GUIPPFLAGS += -DWWW_BROWSER_CMD=\"$(WWW_BROWSER_CMD)\"
