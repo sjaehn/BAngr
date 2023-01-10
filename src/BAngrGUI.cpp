@@ -22,6 +22,7 @@
 #include <cmath>
 #include <exception>
 #include "BAngrDial.hpp"
+#include "BWidgets/BEvents/Event.hpp"
 #include "BWidgets/BEvents/ExposeEvent.hpp"
 #include "BWidgets/BUtilities/Dictionary.hpp"
 #include "BWidgets/BWidgets/ComboBox.hpp"
@@ -60,7 +61,7 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 	spinScreen (640, 480, 100, 35, URID("/screen")),
 	spinFlexLabel (680, 520, 100, 20, BDICT("Flexibility"), URID("/label")),
 	spinTypeCombobox (740, 490, 80, 20, 0, -120, 80, 120, {BDICT("Random"), BDICT("Level"), BDICT("Lows"), BDICT("Mids"), BDICT("Highs")}, 1, URID("/menu")),
-	spinAmountSlider (660, 485, 80, 20, 0.0, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Speed"))
+	spinAmountSlider (660, 485, 80, 20, 0.0, 0.0, 1.0, 0.0, BNOTRANSFERD, BNOTRANSFERD, BDOUBLE_TO_STRING, BSTRING_TO_DOUBLE, URID ("/dial"), BDICT ("Spin"))
 {
 	// Init param widgets
 	for (int i = 0; i < NR_FX; ++i)
@@ -356,7 +357,7 @@ void BAngrGUI::valueChangedCallback (BEvents::Event* event)
 
 		else if (controllerNr == SPIN_TYPE)
 		{
-			value = ui->speedTypeCombobox.getValue() - 1.0f;
+			value = ui->spinTypeCombobox.getValue() - 1.0f;
 			if (value == RANDOM) ui->spinScreen.show();
 			else ui->spinScreen.hide();
 		}
