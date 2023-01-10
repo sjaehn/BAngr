@@ -2,7 +2,7 @@
     {
         "Gain",
         {
-            {"de_DE", "Verstärkung"}
+            {"de_DE", "Verstärk."}
         }
     },
 
@@ -44,7 +44,7 @@
     {
         "Speed",
         {
-            {"de_DE", "Geschindigkeit"}
+            {"de_DE", "Geschwindigkeit"}
         }
     },
 
