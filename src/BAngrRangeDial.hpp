@@ -107,7 +107,7 @@ inline BAngrRangeDial::BAngrRangeDial	(const double  x, const double y, const do
 										 std::function<double (const std::string& s)> reDisplayFunc,
 										 uint32_t urid, std::string title) :
 	BAngrDial (x, y, width, height, value, min, max, step, transferFunc, reTransferFunc, displayFunc, reDisplayFunc, urid, title), 
-	range (0, 0, 0, 0, range, min, max, step)
+	range (0, 0, 0, 0, range, 0, max - min, step)
 {
 	this->range.hide();
 	this->range.setCallbackFunction(BEvents::Event::VALUE_CHANGED_EVENT, rangeChangedCallback);
