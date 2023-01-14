@@ -23,6 +23,7 @@
 
 #include <lv2/lv2plug.in/ns/lv2core/lv2.h>
 #include <lv2/lv2plug.in/ns/ext/urid/urid.h>
+#include <lv2/lv2plug.in/ns/ext/atom/atom.h>
 #include "lv2/lv2plug.in/ns/ext/patch/patch.h"
 #include "Definitions.hpp"
 
@@ -42,7 +43,7 @@ struct BAngrURIs
 	LV2_URID bangr_ycursor;
 };
 
-void getURIs (LV2_URID_Map* m, BAngrURIs* uris)
+inline void getURIs (LV2_URID_Map* m, BAngrURIs* uris)
 {
 	uris->atom_URID = m->map(m->handle, LV2_ATOM__URID);
 	uris->atom_Float = m->map(m->handle, LV2_ATOM__Float);
