@@ -129,10 +129,10 @@ private:
 	BStyles::ColorMap bgColors = BStyles::ColorMap {{{0.15, 0.15, 0.15, 1.0}, {0.3, 0.3, 0.3, 1.0}, {0.05, 0.05, 0.05, 1.0}, {0.0, 0.0, 0.0, 0.0}}};
 	BStyles::ColorMap noColors = BStyles::ColorMap {{{0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0}}};
 
-	BStyles::Border border = {{fgColors[BStyles::STATUS_NORMAL], 1.0}, 0.0, 2.0, 0.0};
-	BStyles::Border menuBorder = {{noColors[BStyles::STATUS_NORMAL], 1.0}, 0.0, 0.0, 0.0};
-	BStyles::Border menuBorder2 = {{bgColors[BStyles::STATUS_NORMAL], 1.0}, 0.0, 0.0, 0.0};
-	BStyles::Border btBorder = BStyles::Border (BStyles::Line (bgColors[BStyles::Status::STATUS_NORMAL].illuminate (BStyles::Color::darkened), 1.0), 0.0, 0.0, 3.0);
+	BStyles::Border border = {{fgColors[BStyles::Status::normal], 1.0}, 0.0, 2.0, 0.0};
+	BStyles::Border menuBorder = {{noColors[BStyles::Status::normal], 1.0}, 0.0, 0.0, 0.0};
+	BStyles::Border menuBorder2 = {{bgColors[BStyles::Status::normal], 1.0}, 0.0, 0.0, 0.0};
+	BStyles::Border btBorder = BStyles::Border (BStyles::Line (bgColors[BStyles::Status::normal].illuminate (BStyles::Color::darkened), 1.0), 0.0, 0.0, 3.0);
 	BStyles::Border labelBorder = {BStyles::noLine, 4.0, 0.0, 0.0};
 	BStyles::Fill widgetBg = BStyles::noFill;
 	BStyles::Fill screenBg = BStyles::Fill (BStyles::Color ({0.04, 0.0, 0.0, 0.8}));
@@ -142,8 +142,8 @@ private:
 		CAIRO_FONT_SLANT_NORMAL, 
 		CAIRO_FONT_WEIGHT_NORMAL, 
 		12.0,
-		BStyles::Font::TEXT_ALIGN_CENTER, 
-		BStyles::Font::TEXT_VALIGN_MIDDLE
+		BStyles::Font::TextAlign::center, 
+		BStyles::Font::TextVAlign::middle
 	);
 
 	BStyles::Font smFont =	BStyles::Font 
@@ -152,8 +152,8 @@ private:
 		CAIRO_FONT_SLANT_NORMAL, 
 		CAIRO_FONT_WEIGHT_NORMAL, 
 		9.0,
-		BStyles::Font::TEXT_ALIGN_CENTER, 
-		BStyles::Font::TEXT_VALIGN_MIDDLE
+		BStyles::Font::TextAlign::center, 
+		BStyles::Font::TextVAlign::middle
 	);
 
 	BStyles::Font rFont =	BStyles::Font 
@@ -162,8 +162,8 @@ private:
 		CAIRO_FONT_SLANT_NORMAL, 
 		CAIRO_FONT_WEIGHT_NORMAL, 
 		12.0,
-		BStyles::Font::TEXT_ALIGN_RIGHT, 
-		BStyles::Font::TEXT_VALIGN_MIDDLE
+		BStyles::Font::TextAlign::right, 
+		BStyles::Font::TextVAlign::middle
 	);
 
 	BStyles::Font lFont =	BStyles::Font 
@@ -172,8 +172,8 @@ private:
 		CAIRO_FONT_SLANT_NORMAL, 
 		CAIRO_FONT_WEIGHT_NORMAL, 
 		12.0,
-		BStyles::Font::TEXT_ALIGN_LEFT, 
-		BStyles::Font::TEXT_VALIGN_MIDDLE
+		BStyles::Font::TextAlign::left, 
+		BStyles::Font::TextVAlign::middle
 	);
 
 	BStyles::Theme theme = BStyles::Theme
@@ -203,7 +203,7 @@ private:
 			URID ("/button"), 
 			BStyles::Style 
 			({
-				{BURID(BSTYLES_STYLEPROPERTY_BACKGROUND_URI), BUtilities::makeAny<BStyles::Fill>({BStyles::Fill(fgColors[BStyles::STATUS_NORMAL])})},
+				{BURID(BSTYLES_STYLEPROPERTY_BACKGROUND_URI), BUtilities::makeAny<BStyles::Fill>({BStyles::Fill(fgColors[BStyles::Status::normal])})},
 				{BURID(BSTYLES_STYLEPROPERTY_BGCOLORS_URI), BUtilities::makeAny<BStyles::ColorMap>(fgColors)},
 				{BURID(BSTYLES_STYLEPROPERTY_BORDER_URI), BUtilities::makeAny<BStyles::Border>(btBorder)}
 			})

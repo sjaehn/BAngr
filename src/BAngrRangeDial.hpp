@@ -110,7 +110,7 @@ inline BAngrRangeDial::BAngrRangeDial	(const double  x, const double y, const do
 	range (0, 0, 0, 0, range, 0, max - min, step)
 {
 	this->range.hide();
-	this->range.setCallbackFunction(BEvents::Event::VALUE_CHANGED_EVENT, rangeChangedCallback);
+	this->range.setCallbackFunction(BEvents::Event::EventType::valueChangedEvent, rangeChangedCallback);
 	add (&this->range);
 }
 

@@ -126,13 +126,13 @@ BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features,
 
 
 	// Set callbacks
-	for (BWidgets::Widget* c : controllerWidgets) c->setCallbackFunction (BEvents::Event::VALUE_CHANGED_EVENT, BAngrGUI::valueChangedCallback);
-	cursor.setCallbackFunction (BEvents::Event::POINTER_DRAG_EVENT, BAngrGUI::cursorDraggedCallback);
-	cursor.setCallbackFunction (BEvents::Event::BUTTON_PRESS_EVENT, BAngrGUI::cursorDraggedCallback);
-	cursor.setCallbackFunction (BEvents::Event::BUTTON_RELEASE_EVENT, BAngrGUI::cursorReleasedCallback);
-	poweredLabel.setCallbackFunction (BEvents::Event::BUTTON_PRESS_EVENT, BAngrGUI::xregionClickedCallback);
-	helpButton.setCallbackFunction (BEvents::Event::BUTTON_PRESS_EVENT, BAngrGUI::helpButtonClickedCallback);
-	ytButton.setCallbackFunction (BEvents::Event::BUTTON_PRESS_EVENT, BAngrGUI::ytButtonClickedCallback);
+	for (BWidgets::Widget* c : controllerWidgets) c->setCallbackFunction (BEvents::Event::EventType::valueChangedEvent, BAngrGUI::valueChangedCallback);
+	cursor.setCallbackFunction (BEvents::Event::EventType::pointerDragEvent, BAngrGUI::cursorDraggedCallback);
+	cursor.setCallbackFunction (BEvents::Event::EventType::buttonPressEvent, BAngrGUI::cursorDraggedCallback);
+	cursor.setCallbackFunction (BEvents::Event::EventType::buttonReleaseEvent, BAngrGUI::cursorReleasedCallback);
+	poweredLabel.setCallbackFunction (BEvents::Event::EventType::buttonPressEvent, BAngrGUI::xregionClickedCallback);
+	helpButton.setCallbackFunction (BEvents::Event::EventType::buttonPressEvent, BAngrGUI::helpButtonClickedCallback);
+	ytButton.setCallbackFunction (BEvents::Event::EventType::buttonPressEvent, BAngrGUI::ytButtonClickedCallback);
 
 	// Pack widgets
 	for (Fx& f : fx)
@@ -505,7 +505,7 @@ static int callResize (LV2UI_Handle ui, int width, int height)
 	BAngrGUI* self = static_cast<BAngrGUI*> (ui);
 	if (!self) return 0;
 
-	BEvents::ExposeEvent* ev = new BEvents::ExposeEvent (self, self, BEvents::Event::CONFIGURE_REQUEST_EVENT, self->getPosition().x, self->getPosition().y, width, height);
+	BEvents::ExposeEvent* ev = new BEvents::ExposeEvent (self, self, BEvents::Event::EventType::configureRequestEvent, self->getPosition().x, self->getPosition().y, width, height);
 	self->addEventToQueue (ev);
 	return 0;
 }
