@@ -131,6 +131,7 @@ request or notifying me (issue report, e-mail, ...).
 ## What's new
 
 * Use new B.Widgets toolkit
+* Internationalization: EN, DE
 
 
 ## Acknowledgments
