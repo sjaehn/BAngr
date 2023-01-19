@@ -2,133 +2,152 @@
     {
         "Gain",
         {
-            {"de_DE", "Verstärk."}
+            {"de_DE", "Verstärk."},
+            {"fr_FR", "Gain"}
         }
     },
 
     {
         "First",
         {
-            {"de_DE", "Erster"}
+            {"de_DE", "Erster"},
+            {"fr_FR", "Premier"}
         }
     },
 
     {
         "Last",
         {
-            {"de_DE", "Letzter"}
+            {"de_DE", "Letzter"},
+            {"fr_FR", "Dernier"}
         }
     },
 
     {
         "Nuke",
         {
-            {"de_DE", "Nuke"}
+            {"de_DE", "Nuke"},
+            {"fr_FR", "Atomiser"}
         }
     },
 
     {
         "Mix",
         {
-            {"de_DE", "Mix"}
+            {"de_DE", "Mix"},
+            {"fr_FR", "Mix"}
         }
     },
 
     {
         "Pan",
         {
-            {"de_DE", "Panorama"}
+            {"de_DE", "Panorama"},
+            {"fr_FR", "Panoramique"}
         }
     },
 
     {
         "Speed",
         {
-            {"de_DE", "Geschwindigkeit"}
+            {"de_DE", "Geschwindigkeit"},
+            {"fr_FR", "Vitesse"}
         }
     },
 
     {
         "Spin",
         {
-            {"de_DE", "Drehung"}
+            {"de_DE", "Drehung"},
+            {"fr_FR", "Rotation"}
         }
     },
 
     {
         "Powered by Airwindows XRegion",
         {
-            {"de_DE", "Powered by Airwindows XRegion"}
+            {"de_DE", "Powered by Airwindows XRegion"},
+            {"fr_FR", "Powered by Airwindows XRegion"}
         }
     },
 
     {
         "Help",
         {
-            {"de_DE", "Hilfe"}
+            {"de_DE", "Hilfe"},
+            {"fr_FR", "Aide"}
         }
     },
 
     {
         "Preview",
         {
-            {"de_DE", "Vorschau"}
+            {"de_DE", "Vorschau"},
+            {"fr_FR", "Prévisualisation"}
         }
     },
 
     {
         "Bypass",
         {
-            {"de_DE", "Bypass"}
+            {"de_DE", "Bypass"},
+            {"fr_FR", "Activer"}
         }
     },
 
     {
         "Dry/wet",
         {
-            {"de_DE", "Dry/wet"}
+            {"de_DE", "Dry/wet"},
+            {"fr_FR", "Dry/wet"}
         }
     },
 
     {
         "Flexibility",
         {
-            {"de_DE", "Flexibilität"}
+            {"de_DE", "Flexibilität"},
+            {"fr_FR", "Flexibilité"}
         }
     },
 
     {
         "Random",
         {
-            {"de_DE", "Zufall"}
+            {"de_DE", "Zufall"},
+            {"fr_FR", "Aléatoire"}
         }
     },
 
     {
         "Level",
         {
-            {"de_DE", "Lautstärke"}
+            {"de_DE", "Lautstärke"},
+            {"fr_FR", "Volume"}
         }
     },
 
     {
         "Lows",
         {
-            {"de_DE", "Tiefen"}
+            {"de_DE", "Tiefen"},
+            {"fr_FR", "Basses"}
         }
     },
 
     {
         "Mids",
         {
-            {"de_DE", "Mitten"}
+            {"de_DE", "Mitten"},
+            {"fr_FR", "Medium"}
         }
     },
 
     {
         "Highs",
         {
-            {"de_DE", "Höhen"}
+            {"de_DE", "Höhen"},
+            {"fr_FR", "Aigüs"}
         }
     }
 }
