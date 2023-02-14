@@ -1,4 +1,7 @@
 /BAngr.lv2/**
+/src/BWidgets/include/**
+/src/BWidgets/build/**
+.clangd
 .tags
 *.zip
 *.tar.xz
