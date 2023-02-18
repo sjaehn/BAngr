@@ -17,7 +17,6 @@ INCFILES = inc/*.png
 B_FILES = $(addprefix $(BUNDLE)/, $(ROOTFILES) $(INCFILES))
 DSP_INCL = src/Airwindows/XRegion.cpp
 GUI_CXX_INCL = src/BWidgets/BUtilities/vsystem.cpp 
-GUI_C_INCL = src/screen.c
 
 # pkg-config
 PKG_CONFIG ?= pkg-config
@@ -82,7 +81,6 @@ $(GUI_OBJ): $(GUI_SRC) src/BWidgets/build
 	@echo -n Build $(BUNDLE) GUI...
 	@mkdir -p $(BUNDLE)
 	@mkdir -p $(BUNDLE)/tmp
-	@cd $(BUNDLE)/tmp; $(CC) $(CPPFLAGS) $(GUIPPFLAGS) $(CFLAGS) $(GUICFLAGS) $(addprefix $(CURDIR)/, $(GUI_C_INCL)) -c
 	@cd $(BUNDLE)/tmp; $(CXX) $(CPPFLAGS) $(GUIPPFLAGS) $(CXXFLAGS) $(GUICFLAGS) $(addprefix $(CURDIR)/, $< $(GUI_CXX_INCL)) -c
 	@$(CXX)  -Wl,--start-group $(LDFLAGS) src/BWidgets/build/libbwidgetscore/*.o $(BUNDLE)/tmp/*.o $(GUILIBS) -Wl,--end-group -o $(BUNDLE)/$@
 ifeq (,$(filter -g,$(CXXFLAGS)))

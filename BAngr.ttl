@@ -22,8 +22,7 @@
 <https://www.jahnichen.de/plugins/lv2/BAngr#gui>
 	a ui:X11UI;
 	ui:binary <BAngrGUI.so> ;
-	lv2:extensionData ui:idleInterface, ui:resize ;
-	lv2:optionalFeature ui:resize ;
+	lv2:extensionData ui:idleInterface ;
 	lv2:requiredFeature ui:idleInterface ;
         ui:portNotification [
 		ui:plugin <https://www.jahnichen.de/plugins/lv2/BAngr> ;
