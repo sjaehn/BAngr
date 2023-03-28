@@ -28,8 +28,8 @@ ifneq ($(shell $(PKG_CONFIG) --exists fontconfig || echo no), no)
 endif
 DSPCFLAGS += `$(PKG_CONFIG) --cflags --static $(LV2_LIBS)`
 GUICFLAGS += -I$(CURDIR)/src/BWidgets/include `$(PKG_CONFIG) --cflags --static $(GUI_LIBS)`
-DSPLIBS += -lm `$(PKG_CONFIG) --libs --static $(LV2_LIBS)`
-GUILIBS += -lm -lcairoplus -lpugl `$(PKG_CONFIG) --libs --static $(GUI_LIBS)`
+DSPLIBS += -Wl,-Bstatic -lm `$(PKG_CONFIG) --libs --static $(LV2_LIBS)` -Wl,-Bdynamic
+GUILIBS += -Wl,-Bstatic -lbwidgetscore -lcairoplus -lpugl -lm -Wl,-Bdynamic `$(PKG_CONFIG) --libs $(GUI_LIBS)`
 
 # complile
 CC ?= gcc
@@ -42,7 +42,7 @@ OPTIMIZATIONS ?=-O3 -ffast-math
 override CPPFLAGS += -DPIC
 override GUIPPFLAGS += -DPUGL_HAVE_CAIRO
 override CFLAGS +=-Wall -fvisibility=hidden -fPIC $(OPTIMIZATIONS)
-override CXXFLAGS +=-Wall -std=c++11 -fvisibility=hidden -fPIC $(OPTIMIZATIONS)
+override CXXFLAGS +=-Wall -std=c++17 -fvisibility=hidden -fPIC $(OPTIMIZATIONS)
 override STRIPFLAGS +=-s
 override LDFLAGS +=-Lsrc/BWidgets/build -Wl,-Bstatic -Wl,-Bdynamic -Wl,--as-needed -shared -pthread
 
@@ -71,7 +71,7 @@ all: $(BUNDLE)
 $(DSP_OBJ): $(DSP_SRC)
 	@echo -n Build $(BUNDLE) DSP...
 	@mkdir -p $(BUNDLE)
-	@$(CXX) $(CPPFLAGS) $(OPTIMIZATIONS) $(CXXFLAGS) $(LDFLAGS) $(DSPCFLAGS) -Wl,--start-group $(DSPLIBS) $< $(DSP_INCL) -Wl,--end-group -o $(BUNDLE)/$@
+	@$(CXX) $(CPPFLAGS) $(OPTIMIZATIONS) $(CXXFLAGS) $(LDFLAGS) $(DSPCFLAGS) $< $(DSP_INCL) $(DSPLIBS) -o $(BUNDLE)/$@
 ifeq (,$(filter -g,$(CXXFLAGS)))
 	@$(STRIP) $(STRIPFLAGS) $(BUNDLE)/$@
 endif
@@ -82,7 +82,7 @@ $(GUI_OBJ): $(GUI_SRC) src/BWidgets/build
 	@mkdir -p $(BUNDLE)
 	@mkdir -p $(BUNDLE)/tmp
 	@cd $(BUNDLE)/tmp; $(CXX) $(CPPFLAGS) $(GUIPPFLAGS) $(CXXFLAGS) $(GUICFLAGS) $(addprefix $(CURDIR)/, $< $(GUI_CXX_INCL)) -c
-	@$(CXX)  -Wl,--start-group $(LDFLAGS) src/BWidgets/build/libbwidgetscore/*.o $(BUNDLE)/tmp/*.o $(GUILIBS) -Wl,--end-group -o $(BUNDLE)/$@
+	@$(CXX) $(LDFLAGS) $(BUNDLE)/tmp/*.o $(GUILIBS) -o $(BUNDLE)/$@
 ifeq (,$(filter -g,$(CXXFLAGS)))
 	@$(STRIP) $(STRIPFLAGS) $(BUNDLE)/$@
 endif
