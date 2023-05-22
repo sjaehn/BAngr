@@ -21,7 +21,7 @@
 #ifndef BANGRGUI_HPP_
 #define BANGRGUI_HPP_
 
-#define BWIDGETS_DEFAULT_DRAWARC_PATH "../examples/OopsDraws/drawArc.hpp"
+#include "BWidgets/BWidgets/Draws/Oops/definitions.hpp"
 
 #include <array>
 #include <lv2/lv2plug.in/ns/extensions/ui/ui.h>
@@ -235,6 +235,7 @@ private:
 			BStyles::Style 
 			({
 				{BURID(BSTYLES_STYLEPROPERTY_BACKGROUND_URI), BUtilities::makeAny<BStyles::Fill>({BStyles::noFill})},
+				{BURID(BSTYLES_STYLEPROPERTY_BGCOLORS_URI), BUtilities::makeAny<BStyles::ColorMap>(noColors)},
 				{BURID(BSTYLES_STYLEPROPERTY_BORDER_URI), BUtilities::makeAny<BStyles::Border>(BStyles::noBorder)}
 			})
 		},
