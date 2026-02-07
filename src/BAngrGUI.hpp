@@ -24,9 +24,9 @@
 #include "BWidgets/BWidgets/Draws/Oops/definitions.hpp"
 
 #include <array>
-#include <lv2/lv2plug.in/ns/extensions/ui/ui.h>
-#include <lv2/lv2plug.in/ns/ext/atom/atom.h>
-#include <lv2/lv2plug.in/ns/ext/atom/forge.h>
+#include <lv2/ui/ui.h>
+#include <lv2/atom/atom.h>
+#include <lv2/atom/forge.h>
 #include "BWidgets/BStyles/Status.hpp"
 #include "BWidgets/BStyles/Types/Border.hpp"
 #include "BWidgets/BStyles/Types/Color.hpp"
