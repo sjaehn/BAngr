@@ -1,7 +1,7 @@
 /* B.Angr
  * Dynamic distorted bandpass filter plugin
  *
- * Copyright (C) 2021 by Sven Jähnichen
+ * Copyright (C) 2021 - 2026 by Sven Jähnichen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,17 +22,14 @@
 #define BANGR_HPP_
 
 #include <cmath>
-#include <ctime>
-#include <array>
-#include <random>
 #include <lv2/core/lv2.h>
 #include <lv2/urid/urid.h>
 #include <lv2/atom/atom.h>
 #include <lv2/atom/forge.h>
 #include <lv2/state/state.h>
 
-#include "Definitions.hpp"
 #include "Ports.hpp"
+#include "RTRand.hpp"
 #include "Urids.hpp"
 #include "Airwindows/XRegion.hpp"
 #include "ButterworthLowPassFilter.hpp"
@@ -58,8 +55,7 @@ private:
 	float xcursor;
 	float ycursor;
 	bool listen;
-	std::minstd_rand rnd;
-	std::uniform_real_distribution<float> bidist;
+	RTRand rnd;
 	double count;
 	float fader;
 	float speed;

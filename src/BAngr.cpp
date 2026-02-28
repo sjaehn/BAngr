@@ -1,7 +1,7 @@
 /* B.Angr
  * Dynamic distorted bandpass filter plugin
  *
- * Copyright (C) 2021 by Sven Jähnichen
+ * Copyright (C) 2021 - 2026 by Sven Jähnichen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,7 @@ BAngr::BAngr (double samplerate, const LV2_Feature* const* features) :
 	xcursor (0.5f),
 	ycursor (0.5f),
 	listen (false),
-	rnd (time (0)), 
-	bidist (-1.0, 1.0),
+	rnd (), 
 	count (0),
 	fader (0.0f),
 	speed (0.0f),
@@ -47,7 +46,7 @@ BAngr::BAngr (double samplerate, const LV2_Feature* const* features) :
 	dspinrand (0.0f),
 	spinflex (0.0f),
 	spindir (1.0f),
-	ang (2.0 * M_PI * bidist (rnd)),
+	ang (2.0 * M_PI * rnd.rand_range(-1.0f, 1.0f)),
 	speedlevel (0.0f),
 	speedmaxlevel (0.1f),
 	spinlevel (0.0f),
@@ -192,8 +191,8 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 		{
 			if (count >= rate)
 			{
-				dspeedrand = bidist (rnd) * controllers[SPEED_RANGE] - speedrand;
-				dspinrand = bidist (rnd) * controllers[SPIN_RANGE] - spinrand;
+				dspeedrand = rnd.rand_range(-1.0f, 1.0f) * controllers[SPEED_RANGE] - speedrand;
+				dspinrand = rnd.rand_range(-1.0f, 1.0f) * controllers[SPIN_RANGE] - spinrand;
 				count = 0.0;
 			}
 
@@ -249,7 +248,7 @@ void BAngr::play (const uint32_t start, const uint32_t end)
 				if (spinmaxlevel < 0.0001f) spinmaxlevel = 0.0001f;	// Limit to -80 db to prevent div by zero
 				const float nspinlevel = (1.0 - 1.0 / (flexTime[LEVEL] * rate)) * spinlevel + 1.0 / (flexTime[LEVEL] * rate) * (2.0 * coeff / spinmaxlevel);
 
-				if ((spinlevel >= 0.2f) && (nspinlevel < 0.2f)) spindir = (bidist (rnd) >= 0.0f ? spindir : -spindir);
+				if ((spinlevel >= 0.2f) && (nspinlevel < 0.2f)) spindir = (rnd.rand_range(-1.0f, 1.0f) >= 0.0f ? spindir : -spindir);
 				spinlevel = nspinlevel;
 				dspinflex = spindir * LIMIT (spinlevel, 0.0f, 1.0f) * controllers[SPIN_RANGE] - spinflex;
 			}; 
