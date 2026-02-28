@@ -1,7 +1,7 @@
 /* B.Angr
  * Dynamic distorted bandpass filter plugin
  *
- * Copyright (C) 2021 - 2023 by Sven Jähnichen
+ * Copyright (C) 2021 - 2026 by Sven Jähnichen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 
 BAngrGUI::BAngrGUI (const char *bundle_path, const LV2_Feature *const *features, PuglNativeView parentWindow) :
-	Window (1000, 560, parentWindow, URID(), "B.Choppr", true, PUGL_MODULE, 0),
+	Window (1000, 560, parentWindow, URID(), "B.Angr", true, PUGL_MODULE, 0),
 	controller (NULL), 
 	write_function (NULL),
 	pluginPath (bundle_path ? std::string (bundle_path) : std::string ("")),
