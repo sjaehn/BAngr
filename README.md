@@ -130,8 +130,10 @@ request or notifying me (issue report, e-mail, ...).
 
 ## What's new
 
-* Use new B.Widgets toolkit
-* Internationalization: EN, DE
+* New build process
+* Realtime-safe random
+* Standard scroll wheel behaviour
+* Bugfixes
 
 
 ## Acknowledgments
