@@ -25,10 +25,13 @@ Unpack the provided bangr-\*.zip or bangr-\*.tar.xz from the latest release and
 copy the BAngr.lv2 folder to your lv2 directory (depending on your system settings,
 ~/.lv2/, /usr/lib/lv2/, /usr/local/lib/lv2/, or ...).
 
-c) Build your own binaries in the following three steps.
+**c) Recommended: Build your own binaries in the following three steps.**
 
-Step 1: [Download the latest published version](https://github.com/sjaehn/BAngr/releases) of B.Angr. 
-Or clone or [download the master](https://github.com/sjaehn/BAngr/archive/master.zip) of this repository.
+Step 1: [Download the latest published version](https://github.com/sjaehn/BAngr/releases) of B.Angr.
+Or clone it including its submodules from this repository:
+```
+git clone --recurse-submodules https://github.com/sjaehn/BAngr
+```
 
 Step 2: Install pkg-config and the development packages for x11, cairo, and lv2 if not done yet. If you
 don't have already got the build tools (compilers, make, libraries) then install them too.
